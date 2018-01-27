@@ -27,7 +27,7 @@ var templateWithoutUser = `
     padding-left: 2em;
     padding-right: 2em;
     height:100vh;
-    background-color: #fcfcfc;
+    background-color: transparent;
     overflow-y: auto;
 }
 #username{display: inline;}
