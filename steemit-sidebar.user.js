@@ -106,7 +106,7 @@ var updateUser = function updateUser(newData) {
     newData.vesting_shares = parseFloat(newData.vesting_shares.replace(" VESTS",""));
     newData.delegated_vesting_shares = parseFloat(newData.delegated_vesting_shares.replace(" VESTS",""));
     newData.received_vesting_shares = parseFloat(newData.received_vesting_shares.replace(" VESTS",""));
-    let effective_vesting_shares= newData.vesting_shares - newData.delegated_vesting_shares + newData.received_vesting_shares;
+    effective_vesting_shares= newData.vesting_shares - newData.delegated_vesting_shares + newData.received_vesting_shares;
     newData.sp= total_vesting_fund * (effective_vesting_shares / total_vesting_shares)
     newData.sp = newData.sp.toFixed(3);
     return newData;
