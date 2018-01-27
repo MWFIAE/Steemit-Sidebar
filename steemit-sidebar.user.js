@@ -30,6 +30,12 @@ var templateWithoutUser = `
     background-color: transparent;
     overflow-y: auto;
 }
+.theme-dark #mw-script-container{
+    background-color: #1C252B;
+}
+.theme-light #mw-script-container{
+    background-color: #fcfcfc;
+}
 #username{display: inline;}
 .mw-favicon{width:16px; height: 16px}
 .mw-ul{list-style-type:none;}
