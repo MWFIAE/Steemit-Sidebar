@@ -129,7 +129,7 @@ var updateAccountInfo = function updateAccountInfo(account, target) {
         return;
     }
     steem.api.getAccounts([account], function (err, result) {
-        if (err != "" || result.length == 0) {
+        if ( ( err != null && err != "") || result.length == 0) {
             user = null;
             console.log(err);
             return;
