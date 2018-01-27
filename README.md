@@ -7,10 +7,11 @@ You can currently see the current Reputation, Voting Power and SteemPower (the l
 Furthermore you can use the links to open a new tab to another website with further Informations to the profil. 
 
 ### Technology Stack
-- Like mentioned it is implemented as a Tampermonkey-Script, so the appropriate browser extension is needed to install it. (If anybody needs help with this, just text me, I'm glad to help) 
-- It's programmed in Javascript and runs directly in the browser. 
+- Like mentioned it is implemented as a **Tampermonkey-Script**, so the appropriate browser extension is needed to install it. (If anybody needs help with this, just text me, I'm glad to help) 
+- It's programmed in **Javascript** and runs directly **in the browser**. 
 - It saves the user that is written in the "Username" input field in a cookie. It should work just fine without cookies enabled, but then you would have to input your name everytime you want to see the infos about yourself.
-- Uses jQuery, Moment.js and the Steemit Javascript API. 
+- Uses **jQuery**, **Moment.js** and the **Steemit Javascript API**. 
+- Tested in **Chrome** and **Firefox**
 
 ### Roadmap
 - Implementing more features and convenience tool for users
@@ -24,5 +25,8 @@ You can come in contact with me with the usual methods:
 - writing me on steemit
 - on the german steemit discord channel
 - etc. (I'm not difficult to find) 
+
+### Installation
+The easiest way to install it is just clicking [this link](https://github.com/MWFIAE/Steemit-Sidebar/raw/master/steemit-sidebar.user.js) while having Tampermonkey installed.
 
 <br /><hr/><em>Posted on <a href="https://utopian.io/utopian-io/@mwfiae/steemit-sidebar">Utopian.io -  Rewarding Open Source Contributors</a></em><hr/>
