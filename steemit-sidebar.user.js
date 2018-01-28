@@ -211,13 +211,20 @@ var refreshCollapse = function refreshCollapse(){
 }
 var toggleCollapse = function toggleCollapse(){
     collapsed = !collapsed;
+    setCookie("mw-collapsed", collapsed, 999);
     refreshCollapse();
 }
 var setup = function setup() {
     username = getCookie("mw-username");
+
+    collapsed = getCookie("mw-collapsed");
+    refreshCollapse();
+
     jQuery('.App__content').eq(0).before(templateWithoutUser.replace("{username}", username));
     jQuery('#mw-username').keypress(updateUsername);
+    jQuery('#mw-button').click(toggleCollapse);
 }
+
 
 function setCookie(cname, cvalue, exdays) {
     let d = new Date();
