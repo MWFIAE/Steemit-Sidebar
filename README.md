@@ -27,6 +27,17 @@ You can come in contact with me with the usual methods:
 - etc. (I'm not difficult to find) 
 
 ### Installation
-The easiest way to install it is just clicking [this link](https://github.com/MWFIAE/Steemit-Sidebar/raw/master/steemit-sidebar.user.js) while having Tampermonkey installed.
+1. Install the Tampermonkey Addon for your browser (the pictures are clickable).
+[**Chrome**
+![image.png](https://res.cloudinary.com/hpiynhbhq/image/upload/v1517100325/xsq9ghbsv0vsqziavxc4.png)](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=de) 
+[**Firefox**
+![image.png](https://res.cloudinary.com/hpiynhbhq/image/upload/v1517100401/xi8yhlzl67wqzocat9n1.png)](https://addons.mozilla.org/de/firefox/addon/tampermonkey/)
+2. Click on  [**this link**](https://github.com/MWFIAE/Steemit-Sidebar/raw/master/steemit-sidebar.user.js) and click on install. 
+![image.png](https://res.cloudinary.com/hpiynhbhq/image/upload/v1517100586/ajzzeufl7rlnplsml1yt.png)
+3. Go to [**steemit.com**](https://steemit.com/@mwfiae) and refresh the page with F5.
+4. Enter your username in the input field on the left side and hit Enter!
+![image.png](https://res.cloudinary.com/hpiynhbhq/image/upload/v1517100700/ohvkrl1nfwr1v9lubo2l.png)
+5. Done! Have Fun!
+
 
 <br /><hr/><em>Posted on <a href="https://utopian.io/utopian-io/@mwfiae/steemit-sidebar">Utopian.io -  Rewarding Open Source Contributors</a></em><hr/>
