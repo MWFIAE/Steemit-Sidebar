@@ -217,7 +217,7 @@ var toggleCollapse = function toggleCollapse(){
 var setup = function setup() {
     username = getCookie("mw-username");
 
-    collapsed = getCookie("mw-collapsed");
+    collapsed = getCookie("mw-collapsed")=="true";
     refreshCollapse();
 
     jQuery('.App__content').eq(0).before(templateWithoutUser.replace("{username}", username));
