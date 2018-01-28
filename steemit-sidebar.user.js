@@ -30,10 +30,21 @@ var templateWithoutUser = `
     overflow-y: auto;
     z-index: 5;
     width: 200px;
+    display: grid;
+    grid-template-rows: 1fr 80px;
+    grid-template-columns: 1fr;
+}
+#mw-main{
+  grid-row-start:1;
+  grid-row-end:1;
+}
+#mw-footer{
+  grid-row-start:2;
+  grid-row-end:2;
 }
 #mw-button{
     float: left;
-    margin-left: 150px;
+    margin-left: 140px;
     z-index: 100;
     position: fixed;
     cursor: pointer;
@@ -49,11 +60,16 @@ var templateWithoutUser = `
 .mw-ul{list-style-type:none;}
 </style>
 <div id="mw-script-container">
+<div id="mw-main">
 <span id="mw-button"><</span>
 <p id="mw-username-p">Username: <input id="mw-username" type="text" value="{username}" /></p>
 <div id="mw-script-content"></div>
 <hr id="mw-divider" />
 <div id="mw-script-content-other"></div>
+</div>
+<div id="mw-footer">
+© by <a href="https://steemit.com/@mwfiae">MWFIAE</a>
+</div>
 </div>
 `;
 var templateWithUser = `
@@ -84,8 +100,6 @@ SteemPower: <a href="https://steemit.com/@{user}/transfers">{sp}</a>
 <li><a href="https://d.tube/#!/c/{user}" target="_blank"><img class="mw-favicon" src="https://d.tube/DTube_files/images/dtubefavicon.png" />D.Tube</a></li>
 <li><a href="https://dmania.lol/profile/{user}" target="_blank"><img class="mw-favicon" src="https://dmania.lol/favicon.ico" />D.Mania</a></li>
 <li><a href="https://alpha.steepshot.io/@{user}" target="_blank"><img class="mw-favicon" src="https://alpha.steepshot.io/static/images/faviconNew.ico" />Steepshot</a></li>
-
-
 </ul>
 </div>
 `;
@@ -99,6 +113,7 @@ var interval = -1;
 //var otheruser = null;
 var otherusername = null;
 var username = null; //"mwfiae";
+var collapsed = false;
 var updateUser = function updateUser(newData) {
     if (newData == undefined) {
         user = null;
@@ -191,6 +206,7 @@ var refreshCollapse = function refreshCollapse(){
         jQuery('#mw-script-content-other').hide();
         jQuery('#mw-username-p').hide();
         jQuery('#mw-divider').hide();
+        jQuery('#mw-footer').hide();
         jQuery('#mw-button').css('margin-left','2px');
         jQuery('#mw-script-container').css('width','2px');
         jQuery('#mw-script-container').css('padding-left','9px');
@@ -202,6 +218,7 @@ var refreshCollapse = function refreshCollapse(){
         jQuery('#mw-script-content-other').show();
         jQuery('#mw-username-p').show();
         jQuery('#mw-divider').show();
+        jQuery('#mw-footer').show();
         jQuery('#mw-button').css('margin-left','150px');
         jQuery('#mw-script-container').css('width','200px');
         jQuery('#mw-script-container').css('padding-left','2em');
@@ -225,7 +242,6 @@ var setup = function setup() {
     jQuery('#mw-username').keypress(updateUsername);
     jQuery('#mw-button').click(toggleCollapse);
 }
-
 
 function setCookie(cname, cvalue, exdays) {
     let d = new Date();
