@@ -44,6 +44,7 @@ You can come in contact with me with the usual methods:
 3. Go to [**steemit.com**](https://steemit.com/@mwfiae) and refresh the page with F5.
 
 4. Enter your username in the input field on the left side and hit Enter!
+
 ![image.png](https://res.cloudinary.com/hpiynhbhq/image/upload/v1517100700/ohvkrl1nfwr1v9lubo2l.png)
 
 5. Done! Have Fun!
