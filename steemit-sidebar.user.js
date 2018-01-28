@@ -2,7 +2,7 @@
 // @name         Steemit-Sidebar
 // @namespace    http://tampermonkey.net/
 // @copyright 2018, mwfiae (https://steemit.com/@mwfiae)
-// @version      0.1
+// @version      0.2
 // @description  try to take over the world!
 // @author       MWFIAE
 // @match        https://steemit.com/*
@@ -27,13 +27,20 @@ var templateWithoutUser = `
     padding-left: 2em;
     padding-right: 2em;
     height:100vh;
-    background-color: transparent;
     overflow-y: auto;
+    z-index: 5;
+    width: 200px;
 }
-.theme-dark #mw-script-container{
+#mw-button{
+    float: left;
+    margin-left: 150px;
+    z-index: 100;
+    position: fixed;
+}
+.theme-dark #mw-script-container, .theme-dark #mw-button{
     background-color: #1C252B;
 }
-.theme-light #mw-script-container{
+.theme-light #mw-script-container, .theme-light #mw-button{
     background-color: #fcfcfc;
 }
 #username{display: inline;}
@@ -41,9 +48,10 @@ var templateWithoutUser = `
 .mw-ul{list-style-type:none;}
 </style>
 <div id="mw-script-container">
-<p>Username: <input id="mw-username" type="text" value="{username}" /></p>
+<span id="mw-button"><</span>
+<p id="mw-username-p">Username: <input id="mw-username" type="text" value="{username}" /></p>
 <div id="mw-script-content"></div>
-<hr />
+<hr id="mw-divider" />
 <div id="mw-script-content-other"></div>
 </div>
 `;
@@ -128,6 +136,7 @@ var updateDisplay = function updateDisplay(target, user) {
         .replace("{rep}", user.displayRep)
         .replace(/{vp}/g, user.trueVotePower);
     jQuery("#" + target).replaceWith(content);
+    refreshCollapse();
 }
 var updateAccountInfo = function updateAccountInfo(account, target) {
     if (account == null || account == "") {
@@ -174,6 +183,35 @@ var updateUsername = function updateUsername(e) {
         setCookie("mw-username", username, 999);
         return false; //<---- Add this line
     };
+}
+var refreshCollapse = function refreshCollapse(){
+    if(collapsed){
+        jQuery('#mw-script-content').hide();
+        jQuery('#mw-script-content-other').hide();
+        jQuery('#mw-username-p').hide();
+        jQuery('#mw-divider').hide();
+        jQuery('#mw-button').css('margin-left','2px');
+        jQuery('#mw-script-container').css('width','2px');
+        jQuery('#mw-script-container').css('padding-left','9px');
+        jQuery('#mw-script-container').css('height','auto');
+        jQuery('#mw-script-container').css('background-color','transparent');
+        jQuery('#mw-button').text(">");
+    }else{
+        jQuery('#mw-script-content').show();
+        jQuery('#mw-script-content-other').show();
+        jQuery('#mw-username-p').show();
+        jQuery('#mw-divider').show();
+        jQuery('#mw-button').css('margin-left','150px');
+        jQuery('#mw-script-container').css('width','200px');
+        jQuery('#mw-script-container').css('padding-left','2em');
+        jQuery('#mw-script-container').css('height','100vh');
+        jQuery('#mw-script-container').css('background-color','');
+        jQuery('#mw-button').text("<");
+    }
+}
+var toggleCollapse = function toggleCollapse(){
+    collapsed = !collapsed;
+    refreshCollapse();
 }
 var setup = function setup() {
     username = getCookie("mw-username");
