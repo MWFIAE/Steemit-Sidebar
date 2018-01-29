@@ -58,6 +58,7 @@ var templateWithoutUser = `
 #username{display: inline;}
 .mw-favicon{width:16px; height: 16px}
 .mw-ul{list-style-type:none;}
+.mw-nowrap{}
 </style>
 <div id="mw-script-container">
 <div id="mw-main">
@@ -75,20 +76,48 @@ var templateWithoutUser = `
 var templateWithUser = `
 <div id="{target}">
 <p>
-<span><a href="https://steemit.com/@{user}">{user}</a> ({rep})</span><br />
+<span><a href="https://steemit.com/@{user}">{user}</a> ({rep})</span>
+</p>
 <span>Voting Power</span>
 <div id="mw-votepower-{target}" style="width:100%;background-color: lightgrey;">
 <style>
 #mw-votepower-bar-{target} {
 width: {vp}%;
-height: 30px;
+height: 23px;
 background-color: #4CAF50;
 text-align: center; /* To center it horizontally (if you want) */
 line-height: 30px; /* To center it vertically */
+}
+#mw-votepower-bar-text-{target}{
 color: white;
+font-size: 0.8em;
+text-align: center; /* To center it horizontally (if you want) */
+float: left;
+width: 100%;
 }
 </style>
-<div id="mw-votepower-bar-{target}">{vp}</div>
+<span id="mw-votepower-bar-text-{target}">{vp}%</span>
+<div id="mw-votepower-bar-{target}"></div>
+</div>
+<span>Bandwidth <span style="font-size: 0.8em">{bw_p}%</span></span>
+<div id="mw-bandwidth-{target}" style="width:100%;background-color: lightgrey;">
+<style>
+#mw-bandwidth-bar-{target} {
+width: {bw_pno0}%;
+height: 23px;
+background-color: #4CAF50;
+line-height: 30px; /* To center it vertically */
+}
+#mw-bandwidth-bar-text-{target}{
+color: white;
+font-size: 0.8em;
+text-align: center; /* To center it horizontally (if you want) */
+float: left;
+width: 100%;
+}
+</style>
+<span id="mw-bandwidth-bar-text-{target}" class="mw-nowrap" nowrap>{bw_c} \/ {bw_m}</span>
+<div id="mw-bandwidth-bar-{target}"></div>
 </div>
 SteemPower: <a href="https://steemit.com/@{user}/transfers">{sp}</a>
 </p>
@@ -114,6 +143,47 @@ var interval = -1;
 var otherusername = null;
 var username = null; //"mwfiae";
 var collapsed = false;
+var total_vesting_fund = 0,
+    total_vesting_shares = 0,
+    max_virtual_bandwidth = 0;
+
+var calcBandwidth = function calcBandwidth(data){
+    const STEEMIT_BANDWIDTH_AVERAGE_WINDOW_SECONDS = 60 * 60 * 24 * 7;
+        let vestingShares = parseFloat(data.vesting_shares)
+        let receivedVestingShares = parseFloat(data.received_vesting_shares)
+
+        let average_bandwidth = parseInt(data.average_bandwidth, 10)
+
+        let delta_time = (new Date - new Date(data.last_bandwidth_update + "Z")) / 1000
+
+        let bandwidthAllocated = (max_virtual_bandwidth  * (vestingShares + receivedVestingShares) / total_vesting_shares)
+        bandwidthAllocated = Math.round(bandwidthAllocated / 1000000);
+
+        let new_bandwidth = 0
+        if (delta_time < STEEMIT_BANDWIDTH_AVERAGE_WINDOW_SECONDS) {
+          new_bandwidth = (((STEEMIT_BANDWIDTH_AVERAGE_WINDOW_SECONDS - delta_time)*average_bandwidth)/STEEMIT_BANDWIDTH_AVERAGE_WINDOW_SECONDS)
+        }
+        new_bandwidth = Math.round(new_bandwidth / 1000000)
+        let remaining = 100 - (100 * new_bandwidth / bandwidthAllocated);
+    /*
+    current bandwidth used 18826
+current bandwidth allocated 4197217
+bandwidth % used 0.4485353032735739
+bandwidth % remaining 99.55146469672643
+*/
+    return [new_bandwidth, bandwidthAllocated, remaining];
+}
+var prettyPrintBytes = function prettyPrintBytes(bytes){
+
+    if(Math.abs(bytes)>1000*1000*1000)
+        return (bytes/(1000*1000*1000)).toFixed(2)+" GB";
+    if(Math.abs(bytes)>1000*1000)
+        return (bytes/(1000*1000)).toFixed(2)+" MB";
+    if(Math.abs(bytes)>1000)
+        return (bytes/1000).toFixed(2)+" KB";
+    return bytes+" B"
+}
+
 var updateUser = function updateUser(newData) {
     if (newData == undefined) {
         user = null;
@@ -139,6 +209,12 @@ var updateUser = function updateUser(newData) {
     effective_vesting_shares= newData.vesting_shares - newData.delegated_vesting_shares + newData.received_vesting_shares;
     newData.sp= total_vesting_fund * (effective_vesting_shares / total_vesting_shares)
     newData.sp = newData.sp.toFixed(3);
+
+    let bandwidthData= calcBandwidth(newData);
+    newData.bw_a = bandwidthData[0];
+    newData.bw_m = bandwidthData[1];
+    newData.bw_p = bandwidthData[2];
+
     return newData;
 }
 var updateDisplay = function updateDisplay(target, user) {
@@ -150,7 +226,11 @@ var updateDisplay = function updateDisplay(target, user) {
         .replace(/{user}/g, user.name)
         .replace(/{sp}/g, user.sp)
         .replace("{rep}", user.displayRep)
-        .replace(/{vp}/g, user.trueVotePower);
+        .replace(/{vp}/g, user.trueVotePower)
+        .replace(/{bw_c}/g, prettyPrintBytes(user.bw_m-user.bw_a))
+        .replace(/{bw_m}/g, prettyPrintBytes(user.bw_m))
+        .replace(/{bw_p}/g, user.bw_p.toFixed(2))
+        .replace(/{bw_pno0}/g, user.bw_p>0?user.bw_p.toFixed(2):"0");
     jQuery("#" + target).replaceWith(content);
     refreshCollapse();
 }
@@ -265,13 +345,12 @@ function getCookie(cname) {
     }
     return "";
 }
-var total_vesting_fund = 0,
-    total_vesting_shares = 0;
 $(document).ready(function () {
     steem.api.getDynamicGlobalProperties(function(err, result) {
 
         total_vesting_fund=parseFloat(result.total_vesting_fund_steem.replace(" STEEM", ""));
         total_vesting_shares = parseFloat(result.total_vesting_shares.replace(" VESTS", ""));
+        max_virtual_bandwidth = parseInt(result.max_virtual_bandwidth, 10);
 
         setup();
         update();
