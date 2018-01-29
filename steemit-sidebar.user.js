@@ -345,6 +345,15 @@ function getCookie(cname) {
     }
     return "";
 }
+function updateGlobalProperties(){
+
+    steem.api.getDynamicGlobalProperties(function(err, result) {
+
+        total_vesting_fund=parseFloat(result.total_vesting_fund_steem.replace(" STEEM", ""));
+        total_vesting_shares = parseFloat(result.total_vesting_shares.replace(" VESTS", ""));
+        max_virtual_bandwidth = parseInt(result.max_virtual_bandwidth, 10);
+    });
+}
 $(document).ready(function () {
     steem.api.getDynamicGlobalProperties(function(err, result) {
 
@@ -354,7 +363,8 @@ $(document).ready(function () {
 
         setup();
         update();
-        setInterval(update, 10000);
-        setInterval(updateOther, 100);
+        setInterval(update, 10000); //Alle 10 Sekunden das eigene Profil updaten
+        setInterval(updateOther, 100); //Jede 1/10 Sekunde überprüfen ob man jetzt das Profil eines anderen Users offen hat :)
+        setInterval(updateGlobalProperties, 60000); // Jede Minute die neuen Properties holen
     });
 });
