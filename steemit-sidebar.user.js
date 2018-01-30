@@ -63,7 +63,7 @@ var templateWithoutUser = `
 <div id="mw-script-container">
 <div id="mw-main">
 <span id="mw-button"><</span>
-<p id="mw-username-p">Username: <input id="mw-username" type="text" value="{username}" /></p>
+<p id="mw-username-p"><input id="mw-username" type="text" value="{username}" placeholder="Username"/></p>
 <div id="mw-script-content"></div>
 <hr id="mw-divider" />
 <div id="mw-script-content-other"></div>
