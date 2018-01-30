@@ -2,7 +2,7 @@
 // @name         Steemit-Sidebar
 // @namespace    http://tampermonkey.net/
 // @copyright 2018, mwfiae (https://steemit.com/@mwfiae)
-// @version      0.3.1
+// @version      0.3.2
 // @description  try to take over the world!
 // @author       MWFIAE
 // @match        https://steemit.com/*
@@ -17,7 +17,6 @@
 'use strict';
 // At this point I just want to say 'thank you!' to @therealwolf
 // without his help and example coding I wouldn't have 'finished' the project this fast
-
 var templateWithoutUser = `
 <style>
 #mw-script-container{
@@ -273,7 +272,7 @@ var updateOther = function updateOther() {
 }
 var updateUsername = function updateUsername(e) {
     if (e.which == 13) {
-        username = jQuery('#mw-username').val();
+        username = jQuery('#mw-username').val().toLowerCase();
         update();
 
         setCookie("mw-username", username, 999);
