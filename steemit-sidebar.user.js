@@ -2,7 +2,7 @@
 // @name         Steemit-Sidebar
 // @namespace    http://tampermonkey.net/
 // @copyright 2018, mwfiae (https://steemit.com/@mwfiae)
-// @version      0.3.3
+// @version      0.3.5
 // @description  try to take over the world!
 // @author       MWFIAE
 // @match        https://steemit.com/*
@@ -106,6 +106,7 @@ var templateWithoutUser = `
 </div>
 </div>
 `;
+//#4CAF50
 var templateWithUser = `
 <div id="{target}">
 <p>
@@ -117,7 +118,7 @@ var templateWithUser = `
 #mw-votepower-bar-{target} {
 width: {vp}%;
 height: 23px;
-background-color: #4CAF50;
+background-color: {vote_color};
 text-align: center; /* To center it horizontally (if you want) */
 line-height: 30px; /* To center it vertically */
 }
@@ -139,7 +140,7 @@ width: 100%;
 #mw-bandwidth-bar-{target} {
 width: {bw_pno0}%;
 height: 23px;
-background-color: #4CAF50;
+background-color: {bw_color};
 line-height: 30px; /* To center it vertically */
 }
 #mw-bandwidth-bar-text-{target}{
@@ -181,6 +182,21 @@ var total_vesting_fund = 0,
     total_vesting_shares = 0,
     max_virtual_bandwidth = 0;
 var dateTimeFormat ='DD.MM. hh:mm:ss';
+
+
+function lerpColor(a, b, amount) {
+
+    var ah = parseInt(a.replace(/#/g, ''), 16),
+        ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
+        bh = parseInt(b.replace(/#/g, ''), 16),
+        br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,
+        rr = ar + amount * (br - ar),
+        rg = ag + amount * (bg - ag),
+        rb = ab + amount * (bb - ab);
+
+    return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
+}
+
 function calcBandwidth(data){
     const STEEMIT_BANDWIDTH_AVERAGE_WINDOW_SECONDS = 60 * 60 * 24 * 7;
         let vestingShares = parseFloat(data.vesting_shares)
@@ -287,6 +303,9 @@ function updateDisplay(target, user) {
         .replace(/{bw_p}/g, user.bw_p.toFixed(2))
         .replace(/{vote_time}/g, user.voteTime)
         .replace(/{vote_span}/g, user.voteSpan)
+        .replace(/{vote_color}/g, lerpColor("#00FF00", "#FF0000", (100-user.trueVotePower)/100))
+        .replace(/{bw_color}/g, lerpColor("#00FF00", "#FF0000", (100-user.bw_p)/100))
+
 
         .replace(/{bw_pno0}/g, user.bw_p>0?user.bw_p.toFixed(2):"0");
     jQuery("#" + target).replaceWith(content);
