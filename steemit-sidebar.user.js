@@ -2,7 +2,7 @@
 // @name         Steemit-Sidebar
 // @namespace    http://tampermonkey.net/
 // @copyright 2018, mwfiae (https://steemit.com/@mwfiae)
-// @version      0.3.2
+// @version      0.3.4
 // @description  try to take over the world!
 // @author       MWFIAE
 // @match        https://steemit.com/*
@@ -58,6 +58,40 @@ var templateWithoutUser = `
 .mw-favicon{width:16px; height: 16px}
 .mw-ul{list-style-type:none;}
 .mw-nowrap{}
+/* Tooltip container */
+.mw-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+/* Tooltip text */
+.mw-tooltip .mw-tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+
+    /* Position the tooltip text */
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+
+    /* Fade in tooltip */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.mw-tooltip:hover .mw-tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
 </style>
 <div id="mw-script-container">
 <div id="mw-main">
@@ -78,7 +112,7 @@ var templateWithUser = `
 <span><a href="https://steemit.com/@{user}">{user}</a> ({rep})</span>
 </p>
 <span>Voting Power</span>
-<div id="mw-votepower-{target}" style="width:100%;background-color: lightgrey;">
+<div id="mw-votepower-{target}" class="mw-tooltip" style="width:100%;background-color: lightgrey;">
 <style>
 #mw-votepower-bar-{target} {
 width: {vp}%;
@@ -95,8 +129,9 @@ float: left;
 width: 100%;
 }
 </style>
-<span id="mw-votepower-bar-text-{target}">{vp}%</span>
-<div id="mw-votepower-bar-{target}"></div>
+  <span id="mw-votepower-bar-text-{target}">{vp}%</span>
+  <div id="mw-votepower-bar-{target}"></div>
+  <div class="mw-tooltiptext">Full:<br />{vote_span}<br />{vote_time}</div>
 </div>
 <span>Bandwidth <span style="font-size: 0.8em">{bw_p}%</span></span>
 <div id="mw-bandwidth-{target}" style="width:100%;background-color: lightgrey;">
@@ -145,7 +180,7 @@ var collapsed = false;
 var total_vesting_fund = 0,
     total_vesting_shares = 0,
     max_virtual_bandwidth = 0;
-
+var dateTimeFormat ='DD.MM. hh:mm:ss';
 var calcBandwidth = function calcBandwidth(data){
     const STEEMIT_BANDWIDTH_AVERAGE_WINDOW_SECONDS = 60 * 60 * 24 * 7;
         let vestingShares = parseFloat(data.vesting_shares)
@@ -199,6 +234,26 @@ var updateUser = function updateUser(newData) {
         updated_voting_power = 10000;
     }
     newData.trueVotePower = (updated_voting_power/100).toFixed(2);
+    let timeForVotePower = (10000-updated_voting_power)/2000*24*60*60;
+    let voteTimeStamp = moment.utc(moment.utc().valueOf() + timeForVotePower*1000);
+    newData.voteTime = voteTimeStamp.format(dateTimeFormat);
+    let voteSpan = "";
+    if(timeForVotePower>24*60*60){
+        let days=parseInt(timeForVotePower/(24*60*60));
+        timeForVotePower -= days*24*60*60;
+        voteSpan = voteSpan + days+"d ";
+    }
+    if(timeForVotePower>60*60){
+        let hours=parseInt(timeForVotePower/(60*60));
+        timeForVotePower -= hours*60*60;
+        voteSpan = voteSpan + hours+"h ";
+    }
+    if(timeForVotePower>60){
+        let minutes=parseInt(timeForVotePower/60);
+        timeForVotePower -= minutes*60;
+        voteSpan = voteSpan + minutes+"m ";
+    }
+    newData.voteSpan = voteSpan;
 
     newData.sp = 0;
     let effective_vesting_shares =0;
@@ -207,6 +262,7 @@ var updateUser = function updateUser(newData) {
     newData.received_vesting_shares = parseFloat(newData.received_vesting_shares.replace(" VESTS",""));
     effective_vesting_shares= newData.vesting_shares - newData.delegated_vesting_shares + newData.received_vesting_shares;
     newData.sp= total_vesting_fund * (effective_vesting_shares / total_vesting_shares)
+
     newData.sp = newData.sp.toFixed(3);
 
     let bandwidthData= calcBandwidth(newData);
@@ -229,6 +285,9 @@ var updateDisplay = function updateDisplay(target, user) {
         .replace(/{bw_c}/g, prettyPrintBytes(user.bw_m-user.bw_a))
         .replace(/{bw_m}/g, prettyPrintBytes(user.bw_m))
         .replace(/{bw_p}/g, user.bw_p.toFixed(2))
+        .replace(/{vote_time}/g, user.voteTime)
+        .replace(/{vote_span}/g, user.voteSpan)
+
         .replace(/{bw_pno0}/g, user.bw_p>0?user.bw_p.toFixed(2):"0");
     jQuery("#" + target).replaceWith(content);
     refreshCollapse();
