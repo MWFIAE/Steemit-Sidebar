@@ -2,7 +2,7 @@
 // @name         Steemit-Sidebar
 // @namespace    http://tampermonkey.net/
 // @copyright 2018, mwfiae (https://steemit.com/@mwfiae)
-// @version      0.3.4
+// @version      0.3.3
 // @description  try to take over the world!
 // @author       MWFIAE
 // @match        https://steemit.com/*
@@ -181,7 +181,7 @@ var total_vesting_fund = 0,
     total_vesting_shares = 0,
     max_virtual_bandwidth = 0;
 var dateTimeFormat ='DD.MM. hh:mm:ss';
-var calcBandwidth = function calcBandwidth(data){
+function calcBandwidth(data){
     const STEEMIT_BANDWIDTH_AVERAGE_WINDOW_SECONDS = 60 * 60 * 24 * 7;
         let vestingShares = parseFloat(data.vesting_shares)
         let receivedVestingShares = parseFloat(data.received_vesting_shares)
@@ -207,7 +207,7 @@ bandwidth % remaining 99.55146469672643
 */
     return [new_bandwidth, bandwidthAllocated, remaining];
 }
-var prettyPrintBytes = function prettyPrintBytes(bytes){
+function prettyPrintBytes(bytes){
 
     if(Math.abs(bytes)>1000*1000*1000)
         return (bytes/(1000*1000*1000)).toFixed(2)+" GB";
@@ -218,7 +218,7 @@ var prettyPrintBytes = function prettyPrintBytes(bytes){
     return bytes+" B"
 }
 
-var updateUser = function updateUser(newData) {
+function updateUser(newData) {
     if (newData == undefined) {
         user = null;
         return;
@@ -272,7 +272,7 @@ var updateUser = function updateUser(newData) {
 
     return newData;
 }
-var updateDisplay = function updateDisplay(target, user) {
+function updateDisplay(target, user) {
     if (user == undefined)
         return;
     let content = templateWithUser;
@@ -307,10 +307,10 @@ var updateAccountInfo = function updateAccountInfo(account, target) {
         updateDisplay(target, user);
   });
 }
-var update = function update() {
+function update() {
     updateAccountInfo(username, "mw-script-content", false);
 }
-var updateOther = function updateOther() {
+function updateOther() {
 
     var newOtherUser;
     splits = document.location.pathname.split('/');
@@ -338,7 +338,7 @@ var updateUsername = function updateUsername(e) {
         return false; //<---- Add this line
     };
 }
-var refreshCollapse = function refreshCollapse(){
+function refreshCollapse(){
     if(collapsed){
         jQuery('#mw-script-content').hide();
         jQuery('#mw-script-content-other').hide();
@@ -365,12 +365,12 @@ var refreshCollapse = function refreshCollapse(){
         jQuery('#mw-button').text("<");
     }
 }
-var toggleCollapse = function toggleCollapse(){
+function toggleCollapse(){
     collapsed = !collapsed;
     setCookie("mw-collapsed", collapsed, 999);
     refreshCollapse();
 }
-var setup = function setup() {
+function setup() {
     username = getCookie("mw-username");
 
     collapsed = getCookie("mw-collapsed")=="true";
