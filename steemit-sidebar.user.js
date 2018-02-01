@@ -2,13 +2,15 @@
 // @name         Steemit-Sidebar
 // @namespace    http://tampermonkey.net/
 // @copyright 2018, mwfiae (https://steemit.com/@mwfiae)
-// @version      0.3.6
+// @version      0.3.7
 // @description  try to take over the world!
 // @author       MWFIAE
 // @match        https://steemit.com/*
 // @match        https://steemw.ga/*
+// @match        http://steemw.ga/*
 // @license MIT
-// @grant        none
+// @grant    GM_getValue
+// @grant    GM_setValue
 // @require http://code.jquery.com/jquery-1.12.4.min.js
 // @require https://cdn.steemjs.com/lib/latest/steem.min.js
 // @require https://momentjs.com/downloads/moment-with-locales.min.js
@@ -402,13 +404,14 @@ function setup() {
 }
 
 function setCookie(cname, cvalue, exdays) {
-    let d = new Date();
-    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-    let expires = "expires=" + d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    GM_setValue(cname, cvalue);
 }
 
 function getCookie(cname) {
+    var val=GM_getValue(cname);
+    if(val!=null)
+        return val;
+
     var name = cname + "=";
     var decodedCookie = decodeURIComponent(document.cookie);
     var ca = decodedCookie.split(';');
