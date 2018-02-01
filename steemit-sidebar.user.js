@@ -253,7 +253,7 @@ function updateUser(newData) {
     newData.trueVotePower = (updated_voting_power/100).toFixed(2);
     let timeForVotePower = (10000-updated_voting_power)/2000*24*60*60;
     let voteTimeStamp = moment.utc(moment.utc().valueOf() + timeForVotePower*1000);
-    newData.voteTime = voteTimeStamp.format(dateTimeFormat);
+    newData.voteTime = voteTimeStamp.local().format(dateTimeFormat);
     let voteSpan = "";
     if(timeForVotePower>24*60*60){
         let days=parseInt(timeForVotePower/(24*60*60));
