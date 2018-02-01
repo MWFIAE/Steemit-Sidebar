@@ -2,7 +2,7 @@
 // @name         Steemit-Sidebar
 // @namespace    http://tampermonkey.net/
 // @copyright 2018, mwfiae (https://steemit.com/@mwfiae)
-// @version      0.3.5
+// @version      0.3.6
 // @description  try to take over the world!
 // @author       MWFIAE
 // @match        https://steemit.com/*
@@ -182,7 +182,7 @@ var collapsed = false;
 var total_vesting_fund = 0,
     total_vesting_shares = 0,
     max_virtual_bandwidth = 0;
-var dateTimeFormat ='DD.MM. hh:mm:ss';
+var dateTimeFormat ='DD.MM. HH:mm:ss';
 
 
 function lerpColor(a, b, amount) {
