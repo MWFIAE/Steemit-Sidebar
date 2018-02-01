@@ -6,6 +6,7 @@
 // @description  try to take over the world!
 // @author       MWFIAE
 // @match        https://steemit.com/*
+// @match        https://steemw.ga/*
 // @license MIT
 // @grant        none
 // @require http://code.jquery.com/jquery-1.12.4.min.js
