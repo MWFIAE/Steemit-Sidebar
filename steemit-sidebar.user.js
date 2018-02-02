@@ -2,7 +2,7 @@
 // @name         Steemit-Sidebar
 // @namespace    http://tampermonkey.net/
 // @copyright 2018, mwfiae (https://steemit.com/@mwfiae)
-// @version      0.4.0
+// @version      0.4.1
 // @description  try to take over the world!
 // @author       MWFIAE
 // @match        https://steemit.com/*
@@ -98,7 +98,7 @@ var templateWithoutUser = `
 </style>
 <div id="mw-script-container">
 <div id="mw-main">
-<span id="mw-button"><</span>
+<span id="mw-button">&lang;</span>
 <p id="mw-username-p"><input id="mw-username" type="text" value="{username}" placeholder="Username"/></p>
 <div id="mw-script-content"></div>
 <hr id="mw-divider" />
@@ -372,7 +372,7 @@ function refreshCollapse(){
         jQuery('#mw-script-container').css('padding-left','9px');
         jQuery('#mw-script-container').css('height','auto');
         jQuery('#mw-script-container').css('background-color','transparent');
-        jQuery('#mw-button').text(">");
+        jQuery('#mw-button').html("&rang;");
     }else{
         jQuery('#mw-script-content').show();
         jQuery('#mw-script-content-other').show();
@@ -384,7 +384,7 @@ function refreshCollapse(){
         jQuery('#mw-script-container').css('padding-left','2em');
         jQuery('#mw-script-container').css('height','100vh');
         jQuery('#mw-script-container').css('background-color','');
-        jQuery('#mw-button').text("<");
+        jQuery('#mw-button').html("&lang;");
     }
 }
 function toggleCollapse(){
@@ -425,6 +425,7 @@ function getCookie(cname) {
         }
     }
     return "";
+
 }
 function updateGlobalProperties(){
 
