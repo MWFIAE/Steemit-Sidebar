@@ -50,6 +50,7 @@ var templateWithoutUser = `
     z-index: 100;
     position: fixed;
     cursor: pointer;
+    font-weight: bolder;
 }
 .theme-dark #mw-script-container, .theme-dark #mw-button{
     background-color: #1C252B;
