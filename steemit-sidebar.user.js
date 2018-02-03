@@ -2,7 +2,7 @@
 // @name         Steemit-Sidebar
 // @namespace    http://tampermonkey.net/
 // @copyright 2018, mwfiae (https://steemit.com/@mwfiae)
-// @version      0.4.3
+// @version      0.4.4
 // @description  try to take over the world!
 // @author       MWFIAE
 // @match        http*://steemit.com/*
@@ -25,13 +25,6 @@
 // At this point I just want to say 'thank you!' to @therealwolf
 // without his help and example coding I wouldn't have 'finished' the project this fast
 
-const TEMPLATE_SETTINGS_MENU = `
-<div id="mw-settings-window" title="Steemit Sidebar Settings">
-
-<table>
-</table>
-</div>
-`;
 const TEMPLATE_WITHOUT_USER = `
 <style>
 .ui-dialog-titlebar-close{
@@ -197,6 +190,15 @@ SteemPower: <a href="https://steemit.com/@{user}/transfers">{sp}</a>
 </div>
 `;
 
+const TEMPLATE_SETTINGS_MENU = `
+<div id="mw-settings-window" title="Steemit Sidebar Settings">
+
+<table>
+<tr><td>Bar Color High</td><td><input id="mw-barColorHigh" class="mw-inline" type="color" value="{BarColorHigh}"/></td></tr>
+<tr><td>Bar Color Low</td><td><input id="mw-barColorLow"class="mw-inline" type="color" value="{BarColorLow}"/></td></tr>
+</table>
+</div>
+`;
 steem.api.setOptions({
   url: 'https://api.steemit.com'
 });
@@ -262,6 +264,31 @@ unsafeWindow.MWSidebar ={
         },
         addGlobalStyle: function(css, id) {
             $("head:first").append($('<style' + (id !== undefined ? ' id="' + id + '"' : '') + ' type="text/css">' + css + '</style>'));
+        }
+    },
+    ui: {
+
+        toggleCollapse: function(){
+            MWSidebar.settings.collapsed = ! MWSidebar.settings.collapsed;
+            MWSidebar.saveSettings();
+            MWSidebar.refreshCollapse();
+        },
+        openSettings: function (){
+            console.log("opening Settings...");
+            MWSidebar.settingsMenu.dialog("open");
+
+            jQuery('#mw-barColorHigh').change(MWSidebar.ui.changeBarColorHigh);
+            jQuery('#mw-barColorLow').change(MWSidebar.ui.changeBarColorLow);
+        },
+        changeBarColorLow: function(){
+            MWSidebar.settings.barColorLow= $("#mw-barColorLow").val();
+            MWSidebar.update();
+            MWSidebar.updateOther();
+        },
+        changeBarColorHigh: function(){
+            MWSidebar.settings.barColorHigh= $("#mw-barColorHigh").val();
+            MWSidebar.update();
+            MWSidebar.updateOther();
         }
     },
 
@@ -422,22 +449,17 @@ unsafeWindow.MWSidebar ={
             jQuery('#mw-button').html("&lang;");
         }
     },
-    toggleCollapse: function(){
-        MWSidebar.settings.collapsed = ! MWSidebar.settings.collapsed;
-        MWSidebar.setCookie("mw-collapsed",  MWSidebar.settings.collapsed);
-        MWSidebar.refreshCollapse();
-    },
-    openSettings: function (){
-        console.log("opening Settings...");
-        MWSidebar.settingsMenu.dialog("open");
-    },
     loadSettings: function(){
-        MWSidebar.settings.username = MWSidebar.getCookie("mw-username");
-        MWSidebar.settings.collapsed = MWSidebar.getCookie("mw-collapsed")=="true";
+        MWSidebar.settings.username = MWSidebar.getSetting("mw-username","");
+        MWSidebar.settings.collapsed = MWSidebar.getSetting("mw-collapsed", false)=="true";
+        MWSidebar.settings.barColorHigh = MWSidebar.getSetting("mw-barColorHigh", "#00FF00");
+        MWSidebar.settings.barColorLow = MWSidebar.getSetting("mw-barColorLow", "#FF0000");
     },
     saveSettings: function(){
-        MWSidebar.setCookie("mw-username", MWSidebar.settings.username);
-        MWSidebar.setCookie("mw-collapsed", MWSidebar.settings.collapsed);
+        MWSidebar.setSetting("mw-username", MWSidebar.settings.username);
+        MWSidebar.setSetting("mw-collapsed", MWSidebar.settings.collapsed);
+        MWSidebar.setSetting("mw-barColorHigh", MWSidebar.settings.barColorHigh);
+        MWSidebar.setSetting("mw-barColorLow", MWSidebar.settings.barColorLow);
     },
     setup: function() {
         MWSidebar.loadSettings();
@@ -445,16 +467,24 @@ unsafeWindow.MWSidebar ={
 
         jQuery('.App__content').eq(0).before(TEMPLATE_WITHOUT_USER.replace("{username}",  MWSidebar.settings.username));
         jQuery('#mw-username').keypress(MWSidebar.updateUsername);
-        jQuery('#mw-button').click(MWSidebar.toggleCollapse);
-        jQuery('#mw-settings').click(MWSidebar.openSettings);
-        jQuery("body").append(TEMPLATE_SETTINGS_MENU);
+        jQuery('#mw-button').click(MWSidebar.ui.toggleCollapse);
+        jQuery('#mw-settings').click(MWSidebar.ui.openSettings);
+
+
+        jQuery("body").append(
+            TEMPLATE_SETTINGS_MENU
+            .replace("{BarColorLow}", MWSidebar.settings.barColorLow)
+            .replace("{BarColorHigh}", MWSidebar.settings.barColorHigh)
+        );
         MWSidebar.settingsMenu = jQuery("#mw-settings-window").dialog({
             autoOpen: false,
             height: 400,
             width: 350,
             modal: true,
             buttons: {
-                "Save Changes": function(){MWSidebar.saveSettings();MWSidebar.settingsMenu.dialog("close");}
+                "Save Changes": function(){
+                    MWSidebar.saveSettings();
+                    MWSidebar.settingsMenu.dialog("close");}
             },
             close: function() {
                 MWSidebar.loadSettings();
@@ -462,10 +492,10 @@ unsafeWindow.MWSidebar ={
         });
         MWSidebar.helper.addGlobalStyle(GM_getResourceText("JQUI_CSS"));
     },
-    setCookie: function(cname, cvalue) {
+    setSetting: function(cname, cvalue) {
         GM_setValue(cname, cvalue);
     },
-    getCookie: function(cname) {
+    getSetting: function(cname, defaultValue) {
         var val=GM_getValue(cname);
         if(val!=null)
             return val;
@@ -482,6 +512,8 @@ unsafeWindow.MWSidebar ={
                 return c.substring(name.length, c.length);
             }
         }
+        if(defaultValue!=null)
+            return defaultValue;
         return "";
 
     },
