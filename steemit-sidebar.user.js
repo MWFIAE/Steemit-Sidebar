@@ -11,17 +11,31 @@
 // @license MIT
 // @grant    GM_getValue
 // @grant    GM_setValue
+// @grant    GM_getResourceText
 // @require http://code.jquery.com/jquery-1.12.4.min.js
 // @require https://cdn.steemjs.com/lib/latest/steem.min.js
 // @require https://momentjs.com/downloads/moment-with-locales.min.js
+// @require https://github.com/inuyaksa/jquery.nicescroll/raw/master/jquery.nicescroll.min.js
+// @require https://code.jquery.com/ui/1.12.1/jquery-ui.min.js
+// @resource JQUI_CSS https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css
 // @updateURL https://openuserjs.org/meta/mwfiae/Steemit-Sidebar.meta.js
 // ==/UserScript==
 /* jshint -W097 */
 'use strict';
 // At this point I just want to say 'thank you!' to @therealwolf
 // without his help and example coding I wouldn't have 'finished' the project this fast
+
+
+var templateSettingsMenu = `
+<div id="mw-settings-window" title="Steemit Sidebar Settings">
+
+</div>
+`;
 var templateWithoutUser = `
 <style>
+.ui-dialog-titlebar-close{
+  top: 3px !important;
+}
 #mw-script-container{
     position: fixed;
     float: left;
@@ -51,6 +65,7 @@ var templateWithoutUser = `
     position: fixed;
     cursor: pointer;
     font-weight: bolder;
+    margin-top: -16px;
 }
 #mw-settings{
     float: left;
@@ -194,7 +209,8 @@ var username = null; //"mwfiae";
 var collapsed = false;
 var total_vesting_fund = 0,
     total_vesting_shares = 0,
-    max_virtual_bandwidth = 0;
+    max_virtual_bandwidth = 0,
+    settingsmenu=null;
 var dateTimeFormat ='DD.MM. HH:mm:ss';
 
 
@@ -323,6 +339,7 @@ function updateDisplay(target, user) {
 
         .replace(/{bw_pno0}/g, user.bw_p>0?user.bw_p.toFixed(2):"0");
     jQuery("#" + target).replaceWith(content);
+    jQuery('#mw-script-container').niceScroll({cursorcolor:"lightblue"});
     refreshCollapse();
 }
 var updateAccountInfo = function updateAccountInfo(account, target) {
@@ -403,6 +420,10 @@ function toggleCollapse(){
     setCookie("mw-collapsed", collapsed, 999);
     refreshCollapse();
 }
+function openSettings(){
+    console.log("opening Settings...");
+    settingsMenu.dialog("open");
+}
 function setup() {
     username = getCookie("mw-username");
 
@@ -412,6 +433,22 @@ function setup() {
     jQuery('.App__content').eq(0).before(templateWithoutUser.replace("{username}", username));
     jQuery('#mw-username').keypress(updateUsername);
     jQuery('#mw-button').click(toggleCollapse);
+    jQuery('#mw-settings').click(openSettings);
+    jQuery("body").append(templateSettingsMenu);
+    settingsMenu = jQuery("#mw-settings-window").dialog({
+      autoOpen: false,
+      height: 400,
+      width: 350,
+      modal: true,
+      buttons: {
+        "Save Changes": function(){}
+      },
+      close: function() {
+        //form[ 0 ].reset();
+        //allFields.removeClass( "ui-state-error" );
+      }
+    });
+    addGlobalStyle(GM_getResourceText("JQUI_CSS"));
 }
 
 function setCookie(cname, cvalue, exdays) {
@@ -447,6 +484,13 @@ function updateGlobalProperties(){
         max_virtual_bandwidth = parseInt(result.max_virtual_bandwidth, 10);
     });
 }
+function addGlobalStyle(css, id) {
+    if (id !== undefined) {
+        SCT.removeGlobalStyle(id);
+    }
+    $("head:first").append($('<style' + (id !== undefined ? ' id="' + id + '"' : '') + ' type="text/css">' + css + '</style>'));
+}
+
 $(document).ready(function () {
     steem.api.getDynamicGlobalProperties(function(err, result) {
 
