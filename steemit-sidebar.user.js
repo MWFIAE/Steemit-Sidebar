@@ -160,7 +160,7 @@ width: 100%;
 </style>
   <span id="mw-votepower-bar-text-{{temp.target}}">{{user.trueVotePower}}%</span>
   <div id="mw-votepower-bar-{{temp.target}}"></div>
-  <div class="mw-tooltiptext">Full:<br />{{user.vote_span}}<br />{{user.vote_time}}</div>
+  <div class="mw-tooltiptext">Full:<br />{{user.voteSpan}}<br />{{user.voteTime}}</div>
 </div>
 <span>Bandwidth <span style="font-size: 0.8em">{{temp.bw_p}}%</span></span>
 <div id="mw-bandwidth-{{temp.target}}" style="width:100%;background-color: lightgrey;">
