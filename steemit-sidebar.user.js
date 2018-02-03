@@ -255,6 +255,8 @@ bandwidth % remaining 99.55146469672643
 }
 function prettyPrintBytes(bytes){
 
+    if(Math.abs(bytes)>1000*1000*1000*1000)
+        return (bytes/(1000*1000*1000*1000)).toFixed(2)+" TB";
     if(Math.abs(bytes)>1000*1000*1000)
         return (bytes/(1000*1000*1000)).toFixed(2)+" GB";
     if(Math.abs(bytes)>1000*1000)
