@@ -300,7 +300,6 @@ unsafeWindow.MWSidebar ={
                     match.split(".").forEach(function(single){
                         object = object[single];
                     });
-                    console.log(object);
                     if((typeof object)=="string" && object.match(new RegExp(MWSidebar.helper.regexVariable))){
                         object = MWSidebar.helper.fillTemplate(object, values, depth+1);
                     }
