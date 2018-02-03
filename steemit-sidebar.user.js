@@ -24,9 +24,15 @@
 'use strict';
 // At this point I just want to say 'thank you!' to @therealwolf
 // without his help and example coding I wouldn't have 'finished' the project this fast
-
 const TEMPLATE_WITHOUT_USER = `
 <style>
+
+.ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 12em; }
+.ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
+.ui-tabs-vertical .ui-tabs-nav li a { display:inline-block;width: 100% }
+.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; }
+.ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right; width: 35em;}
+
 .ui-dialog-titlebar-close{
   top: 3px !important;
 }
@@ -192,11 +198,17 @@ SteemPower: <a href="https://steemit.com/@{user}/transfers">{sp}</a>
 
 const TEMPLATE_SETTINGS_MENU = `
 <div id="mw-settings-window" title="Steemit Sidebar Settings">
-
-<table>
-<tr><td>Bar Color High</td><td><input id="mw-barColorHigh" class="mw-inline" type="color" value="{BarColorHigh}"/></td></tr>
-<tr><td>Bar Color Low</td><td><input id="mw-barColorLow"class="mw-inline" type="color" value="{BarColorLow}"/></td></tr>
-</table>
+<div id="tabs">
+  <ul>
+    <li><a href="#tabs-1">Appearance</a></li>
+  </ul>
+  <div id="tabs-1">
+    <table>
+      <tr><td>Bar Color High</td><td><input id="mw-barColorHigh" class="mw-inline" type="color" value="{BarColorHigh}"/></td></tr>
+      <tr><td>Bar Color Low</td><td><input id="mw-barColorLow"class="mw-inline" type="color" value="{BarColorLow}"/></td></tr>
+    </table>
+  </div>
+</div>
 </div>
 `;
 steem.api.setOptions({
@@ -276,6 +288,8 @@ unsafeWindow.MWSidebar ={
         openSettings: function (){
             console.log("opening Settings...");
             MWSidebar.settingsMenu.dialog("open");
+            $( "#tabs" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
+            $( "#tabs li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 
             jQuery('#mw-barColorHigh').change(MWSidebar.ui.changeBarColorHigh);
             jQuery('#mw-barColorLow').change(MWSidebar.ui.changeBarColorLow);
@@ -479,7 +493,7 @@ unsafeWindow.MWSidebar ={
         MWSidebar.settingsMenu = jQuery("#mw-settings-window").dialog({
             autoOpen: false,
             height: 400,
-            width: 350,
+            width: "50em",
             modal: true,
             buttons: {
                 "Save Changes": function(){
