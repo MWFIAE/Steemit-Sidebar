@@ -512,11 +512,12 @@ unsafeWindow.MWSidebar ={
     },
     setup: function() {
         MWSidebar.loadSettings();
-        MWSidebar.refreshCollapse();
 
         jQuery('.App__content').eq(0).before(
             MWSidebar.helper.fillTemplate(TEMPLATE_WITHOUT_USER, {settings: MWSidebar.settings})
         );
+        MWSidebar.refreshCollapse();
+      
         jQuery('#mw-username').keypress(MWSidebar.updateUsername);
         jQuery('#mw-button').click(MWSidebar.ui.toggleCollapse);
         jQuery('#mw-settings').click(MWSidebar.ui.openSettings);
