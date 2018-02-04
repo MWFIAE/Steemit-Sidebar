@@ -2,7 +2,7 @@
 // @name         Steemit-Sidebar
 // @namespace    http://tampermonkey.net/
 // @copyright 2018, mwfiae (https://steemit.com/@mwfiae)
-// @version      0.4.4
+// @version      0.4.5
 // @description  try to take over the world!
 // @author       MWFIAE
 // @match        http*://steemit.com/*
@@ -497,9 +497,12 @@ unsafeWindow.MWSidebar ={
     },
     loadSettings: function(){
         MWSidebar.settings.username = MWSidebar.getSetting("mw-username","");
-        MWSidebar.settings.collapsed = MWSidebar.getSetting("mw-collapsed", false)=="true";
         MWSidebar.settings.barColorHigh = MWSidebar.getSetting("mw-barColorHigh", "#00FF00");
-        MWSidebar.settings.barColorLow = MWSidebar.getSetting("mw-barColorLow", "#FF0000");
+        MWSidebar.settings.barColorLow = MWSidebar.getSetting("mw-barColorLow", "#FF0000");        
+      
+        let collapsed = MWSidebar.getSetting("mw-collapsed", false);
+        MWSidebar.settings.collapsed = collapsed==true || collapsed=="true";
+        
     },
     saveSettings: function(){
         MWSidebar.setSetting("mw-username", MWSidebar.settings.username);
