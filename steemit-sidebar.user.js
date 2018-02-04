@@ -136,7 +136,7 @@ const TEMPLATE_WITHOUT_USER = `
 </div>
 `;
 const TEMPLATE_WITH_USER = `
-<div id="{target}">
+<div id="{{temp.target}}">
 <p>
 <span><a href="https://steemit.com/@{{user.name}}">{{user.name}}</a> ({{user.displayRep}})</span>
 </p>
