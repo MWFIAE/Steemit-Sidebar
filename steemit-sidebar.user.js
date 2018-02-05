@@ -26,16 +26,16 @@
 // without his help and example coding I wouldn't have 'finished' the project this fast
 const TEMPLATE_WITHOUT_USER = `
 <style>
-
-.ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 12em; }
+.ui-tabs{ height:100%; }
+.ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 20%; }
 .ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
 .ui-tabs-vertical .ui-tabs-nav li a { display:inline-block;width: 100% }
 .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; }
-.ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right; width: 35em;}
-
-.ui-dialog-titlebar-close{
-  top: 3px !important;
+.ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: left; width: 80%; }
+.ui-button .ui-icon.ui-icon-closethick {
+	background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAVlJREFUOI2Fkj9rwkAYh3+XJleCgYwnUcT+gX4ClyztUCl063dRkiGDDoeDfgMd7isILYRO7ZRvUCoNKMFAbusQcO1iSoiX+NsO3ud533vv0Gq1bM55KISI2+32Fc6k2+3eCSFiznlIKTUJ5zwcDAZPACClTMbj8UOWZds6eDabvTPGegAQRdGb1ul0bosCxlhvPp9/qCapwgDgOM615nneo5QyaZKo4DRN4yAInskR6i8Wi89yQXEdXdepCvZ9fyil3JFSZ6WkmEoFA8C/oE5SThU+ETRJVDAAaFWBYRiXqu66rlNCyEnDi/JBte0ilmXZruu+RFG0zvP890RQ91SHwyG3LMuuk5Am2Pf9IQDUPXGWZVvSBBcLa/onRAgRO45zUwcXUUmSJNloaZr+nIOPHXej0ei+/O33+/0GlFJzOp2+LpfLL8ZYvwpWwxjrr1ar78lksqaUmn9KJe5VUzwlIQAAAABJRU5ErkJggg==') !important;
 }
+
 #mw-script-container{
     position: fixed;
     float: left;
@@ -144,7 +144,7 @@ const TEMPLATE_WITH_USER = `
 <div id="mw-votepower-{{temp.target}}" class="mw-tooltip" style="width:100%;background-color: lightgrey;">
 <style>
 #mw-votepower-bar-{{temp.target}} {
-width: {vp}%;
+width: {{user.trueVotePower}}%;
 height: 23px;
 background-color: {{temp.vote_color}};
 text-align: center; /* To center it horizontally (if you want) */
@@ -195,6 +195,7 @@ const TEMPLATE_SETTINGS_MENU = `
 <div id="tabs">
   <ul>
     <li><a href="#tabs-1">Appearance</a></li>
+    <li><a href="#tabs-2">Links</a></li>
   </ul>
   <div id="tabs-1">
     <table>
@@ -202,19 +203,33 @@ const TEMPLATE_SETTINGS_MENU = `
       <tr><td>Bar Color Low</td><td><input id="mw-barColorLow"class="mw-inline" type="color" value="{{settings.barColorLow}}"/></td></tr>
     </table>
   </div>
+  <div id="tabs-2" style="overflow-y: auto">
+    <input type="button" id="mw-restore-links" value="Restore Links"/>
+    <table id="mw-link-table">
+      <tr><th>Icon</th><th>Url</th><th>Text</th></tr>
+      <tr>
+        <td><input id="mw-new-link-icon" type="text" value="" /></td>
+        <td><input id="mw-new-link-url" type="text" value="" /></td>
+        <td><input id="mw-new-link-text" type="text" value="" /></td>
+        <td><input class="mw-button-add-link" style="background-color:green" type="button" value="+" /></td>
+      </tr>
+      {{links}}
+    </table>
+  </div>
 </div>
 </div>
 `;
 const TEMPLATE_LINK = `<li><a href="{{link.url}}" target="_blank"><img class="mw-favicon" src="{{link.icon}}" />{{link.text}}</a></li>`;
+const TEMPLATE_LINK_SETTINGS = `<tr><td><img class="mw-favicon" src="{{link.icon}}" /></td><td>{{link.url}}</td><td>{{link.text}}</td><td><input class="mw-button-delete-link" style="background-color:red" type="button" value="-" /></td></tr>`;
 
 const DEFAULT_LINKS=[
-    {url: "https://steemd.com/@{{user.name}}", icon: "https://steemd.com/favicon-steem9.png", text: "Steemd", activated: true},
-    {url: "https://steemworld.org/@{{user.name}}", icon: "https://steemworld.org/favicon.png", text: "Steemworld", activated: true},
-    {url: "https://steemnow.com/@{{user.name}}", icon: "https://steemnow.com/favicon.ico", text: "Steemnow", activated: true},
-    {url: "https://zappl.com/@{{user.name}}", icon: "https://zappl.com/1/images/favicon.png", text: "Zappl", activated: true},
-    {url: "https://d.tube/#!/c/{{user.name}}", icon: "https://d.tube/DTube_files/images/dtubefavicon.png", text: "D.Tube", activated: true},
-    {url: "https://dmania.lol/profile/{{user.name}}", icon: "https://dmania.lol/favicon.ico", text: "D.Mania", activated: true},
-    {url: "https://alpha.steepshot.io/@{{user.name}}", icon: "https://alpha.steepshot.io/static/images/faviconNew.ico", text: "Steepshot", activated: true},
+    {url: "https://steemd.com/@{{user.name}}", icon: "https://steemd.com/favicon-steem9.png", text: "Steemd"},
+    {url: "https://steemworld.org/@{{user.name}}", icon: "https://steemworld.org/favicon.png", text: "Steemworld"},
+    {url: "https://steemnow.com/@{{user.name}}", icon: "https://steemnow.com/favicon.ico", text: "Steemnow"},
+    {url: "https://zappl.com/@{{user.name}}", icon: "https://zappl.com/1/images/favicon.png", text: "Zappl"},
+    {url: "https://d.tube/#!/c/{{user.name}}", icon: "https://d.tube/DTube_files/images/dtubefavicon.png", text: "D.Tube"},
+    {url: "https://dmania.lol/profile/{{user.name}}", icon: "https://dmania.lol/favicon.ico", text: "D.Mania"},
+    {url: "https://alpha.steepshot.io/@{{user.name}}", icon: "https://alpha.steepshot.io/static/images/faviconNew.ico", text: "Steepshot"},
 ];
 steem.api.setOptions({
   url: 'https://api.steemit.com'
@@ -289,7 +304,7 @@ unsafeWindow.MWSidebar ={
             if(depth==undefined)
                 depth = 1;
             if(depth > 5)
-                return "recursionError";
+                return template;
             let result = template;
             let regex = new RegExp(MWSidebar.helper.regexVariable);
             let matches=null;
@@ -325,6 +340,17 @@ unsafeWindow.MWSidebar ={
 
             jQuery('#mw-barColorHigh').change(MWSidebar.ui.changeBarColorHigh);
             jQuery('#mw-barColorLow').change(MWSidebar.ui.changeBarColorLow);
+
+            jQuery("#mw-restore-links").click(MWSidebar.ui.restoreLinks);
+            jQuery(".mw-button-delete-link").click(MWSidebar.ui.deleteLink);
+            jQuery(".mw-button-add-link").click(MWSidebar.ui.addLink);
+
+            /*$('.ui-dialog').css({
+                'width': $(window).width(),
+                'height': $(window).height(),
+                'left': '0px',
+                'top':'0px'
+            });*/
         },
         changeBarColorLow: function(){
             MWSidebar.settings.barColorLow= $("#mw-barColorLow").val();
@@ -335,6 +361,49 @@ unsafeWindow.MWSidebar ={
             MWSidebar.settings.barColorHigh= $("#mw-barColorHigh").val();
             MWSidebar.update();
             MWSidebar.updateOther();
+        },
+        removeAllLinks: function(){
+            jQuery("#mw-link-table tr:has(.mw-button-delete-link)").remove();
+        },
+        addAllLinks: function(){
+            jQuery("#mw-link-table").append(MWSidebar.settings.links.reduce((result,link)=>{
+                return result + MWSidebar.helper.fillTemplate(TEMPLATE_LINK_SETTINGS, {link: link}, 5);
+            },""));
+            jQuery(".mw-button-delete-link").click(MWSidebar.ui.deleteLink);
+        },
+        addLink: function(){
+            let icon = jQuery("#mw-new-link-icon").val();
+            let url = jQuery("#mw-new-link-url").val();
+            let text = jQuery("#mw-new-link-text").val();
+            if(url==""){
+                alert("You have to enter an url!");
+                return;
+            }
+            if(icon==""&&text==""){
+                alert("You have to enter an icon or text!");
+                return;
+            }
+            jQuery("#mw-new-link-icon").val("");
+            jQuery("#mw-new-link-url").val("");
+            jQuery("#mw-new-link-text").val("");
+            let link = {icon: icon, url: url, text: text};
+            MWSidebar.settings.links.push(link);
+            MWSidebar.saveSettings();
+            MWSidebar.ui.removeAllLinks()
+            MWSidebar.ui.addAllLinks();
+        },
+        deleteLink: function(e){
+            var i= jQuery(".mw-button-delete-link").index(e.target);
+            MWSidebar.settings.links.splice(i, 1);
+            MWSidebar.saveSettings();
+            MWSidebar.ui.removeAllLinks()
+            MWSidebar.ui.addAllLinks();
+        },
+        restoreLinks: function(){
+            MWSidebar.settings.links = DEFAULT_LINKS.slice(0);
+            MWSidebar.saveSettings();
+            MWSidebar.ui.removeAllLinks()
+            MWSidebar.ui.addAllLinks();
         }
     },
 
@@ -498,17 +567,23 @@ unsafeWindow.MWSidebar ={
     loadSettings: function(){
         MWSidebar.settings.username = MWSidebar.getSetting("mw-username","");
         MWSidebar.settings.barColorHigh = MWSidebar.getSetting("mw-barColorHigh", "#00FF00");
-        MWSidebar.settings.barColorLow = MWSidebar.getSetting("mw-barColorLow", "#FF0000");        
-      
+        MWSidebar.settings.barColorLow = MWSidebar.getSetting("mw-barColorLow", "#FF0000");
+
         let collapsed = MWSidebar.getSetting("mw-collapsed", false);
         MWSidebar.settings.collapsed = collapsed==true || collapsed=="true";
-        
+
+        let json =  MWSidebar.getSetting("mw-links", null);
+        if(json==null||json=="")
+            MWSidebar.settings.links = DEFAULT_LINKS;
+        else
+            MWSidebar.settings.links = JSON.parse(json);
     },
     saveSettings: function(){
         MWSidebar.setSetting("mw-username", MWSidebar.settings.username);
         MWSidebar.setSetting("mw-collapsed", MWSidebar.settings.collapsed);
         MWSidebar.setSetting("mw-barColorHigh", MWSidebar.settings.barColorHigh);
         MWSidebar.setSetting("mw-barColorLow", MWSidebar.settings.barColorLow);
+        MWSidebar.setSetting("mw-links", JSON.stringify(MWSidebar.settings.links));
     },
     setup: function() {
         MWSidebar.loadSettings();
@@ -517,17 +592,21 @@ unsafeWindow.MWSidebar ={
             MWSidebar.helper.fillTemplate(TEMPLATE_WITHOUT_USER, {settings: MWSidebar.settings})
         );
         MWSidebar.refreshCollapse();
-      
         jQuery('#mw-username').keypress(MWSidebar.updateUsername);
         jQuery('#mw-button').click(MWSidebar.ui.toggleCollapse);
         jQuery('#mw-settings').click(MWSidebar.ui.openSettings);
 
-        jQuery("body").append(MWSidebar.helper.fillTemplate(TEMPLATE_SETTINGS_MENU, {settings: MWSidebar.settings}));
+        let index = 0;
+        let links = MWSidebar.settings.links.reduce((result,link)=>{
+            return (result=={}?"":result) + MWSidebar.helper.fillTemplate(TEMPLATE_LINK_SETTINGS, {link: link}, 5);
+        },"");
+        jQuery("body").append(MWSidebar.helper.fillTemplate(TEMPLATE_SETTINGS_MENU, {settings: MWSidebar.settings, links:links}));
 
         MWSidebar.settingsMenu = jQuery("#mw-settings-window").dialog({
             autoOpen: false,
-            height: 400,
-            width: "50em",
+            resizable: false,
+            height: 600,
+            width: "80vw",
             modal: true,
             buttons: {
                 "Save Changes": function(){
