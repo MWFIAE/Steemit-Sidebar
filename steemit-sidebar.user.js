@@ -2,7 +2,7 @@
 // @name         Steemit-Sidebar
 // @namespace    http://tampermonkey.net/
 // @copyright 2018, mwfiae (https://steemit.com/@mwfiae)
-// @version      0.4.6
+// @version      0.4.7
 // @description  try to take over the world!
 // @author       MWFIAE
 // @match        http*://steemit.com/*
@@ -212,7 +212,7 @@ const TEMPLATE_SETTINGS_MENU = `
         <td><input id="mw-new-link-icon" type="text" value="" /></td>
         <td><input id="mw-new-link-url" type="text" value="" /></td>
         <td><input id="mw-new-link-text" type="text" value="" /></td>
-        <td><input class="mw-button mw-button-add-link" style="background-color:green" type="button" value="+" /></td>
+        <td><input class="mw-button mw-button-add-link" style="background-color:lightgreen" type="button" value="+" /></td>
       </tr>
       {{links}}
     </table>
@@ -221,7 +221,7 @@ const TEMPLATE_SETTINGS_MENU = `
 </div>
 `;
 const TEMPLATE_LINK = `<li><a href="{{link.url}}" target="_blank"><img class="mw-favicon" src="{{link.icon}}" />{{link.text}}</a></li>`;
-const TEMPLATE_LINK_SETTINGS = `<tr><td><img class="mw-favicon" src="{{link.icon}}" /></td><td>{{link.url}}</td><td>{{link.text}}</td><td><input class="mw-button mw-button-delete-link" style="background-color:red" type="button" value="-" /></td></tr>`;
+const TEMPLATE_LINK_SETTINGS = `<tr><td><img class="mw-favicon" src="{{link.icon}}" /></td><td>{{link.url}}</td><td>{{link.text}}</td><td><input class="mw-button mw-button-delete-link" style="background-color:pink" type="button" value="x" /></td></tr>`;
 
 const DEFAULT_LINKS=[
     {url: "https://steemd.com/@{{user.name}}", icon: "https://steemd.com/favicon-steem9.png", text: "Steemd"},
