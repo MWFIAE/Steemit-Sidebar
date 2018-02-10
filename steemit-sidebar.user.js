@@ -2,7 +2,7 @@
 // @name         Steemit-Sidebar
 // @namespace    http://tampermonkey.net/
 // @copyright 2018, mwfiae (https://steemit.com/@mwfiae)
-// @version      0.4.7
+// @version      0.4.8
 // @description  try to take over the world!
 // @author       MWFIAE
 // @match        http*://steemit.com/*
@@ -653,7 +653,20 @@ unsafeWindow.MWSidebar ={
             MWSidebar.globalProps.maxVirtualBandwidth = parseInt(result.max_virtual_bandwidth, 10);
         });
     },
-
+    doUpdate: function(){
+        MWSidebar.update();
+        setTimeout(MWSidebar.doUpdate, 10000); //Alle 10 Sekunden das eigene Profil updaten
+        //setInterval(MWSidebar.update, 10000);
+    },
+    doUpdateOther: function(){
+        MWSidebar.updateOther();
+        setTimeout(MWSidebar.doUpdateOther, 100); //Jede 1/10 Sekunde überprüfen ob man jetzt das Profil eines anderen Users offen hat :)
+        //setInterval(MWSidebar.update, 10000);
+    },
+    doUpdateGlobalProperties: function(){
+        MWSidebar.updateGlobalProperties();
+        setTimeout(MWSidebar.doUpdateGlobalProperties, 60000); // Jede Minute die neuen Properties holen
+    }
 }
 
 
@@ -665,10 +678,8 @@ $(document).ready(function () {
         MWSidebar.globalProps.maxVirtualBandwidth = parseInt(result.max_virtual_bandwidth, 10);
 
         MWSidebar.setup();
-        MWSidebar.update();
-        //setInterval(changeSTU, 1000);
-        setInterval(MWSidebar.update, 10000); //Alle 10 Sekunden das eigene Profil updaten
-        setInterval(MWSidebar.updateOther, 100); //Jede 1/10 Sekunde überprüfen ob man jetzt das Profil eines anderen Users offen hat :)
-        setInterval(MWSidebar.updateGlobalProperties, 60000); // Jede Minute die neuen Properties holen
+        MWSidebar.doUpdate();
+        MWSidebar.doUpdateOther();
+        MWSidebar.doUpdateGlobalProperties();
     });
 });
