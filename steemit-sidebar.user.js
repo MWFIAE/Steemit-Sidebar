@@ -2,7 +2,7 @@
 // @name         Steemit-Sidebar
 // @namespace    http://tampermonkey.net/
 // @copyright 2018, mwfiae (https://steemit.com/@mwfiae)
-// @version      0.4.8
+// @version      0.5.0
 // @description  try to take over the world!
 // @author       MWFIAE
 // @match        http*://steemit.com/*
