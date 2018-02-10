@@ -371,6 +371,9 @@ unsafeWindow.MWSidebar ={
                 return result + MWSidebar.helper.fillTemplate(TEMPLATE_LINK_SETTINGS, {link: link}, 5);
             },""));
             jQuery(".mw-button-delete-link").click(MWSidebar.ui.deleteLink);
+
+            MWSidebar.doUpdate();
+            MWSidebar.doUpdateOther();
         },
         addLink: function(){
             let icon = jQuery("#mw-new-link-icon").val();
@@ -612,10 +615,15 @@ unsafeWindow.MWSidebar ={
             buttons: {
                 "Save Changes": function(){
                     MWSidebar.saveSettings();
-                    MWSidebar.settingsMenu.dialog("close");}
+                    MWSidebar.settingsMenu.dialog("close");
+                    MWSidebar.update();
+                    MWSidebar.updateOther();
+                }
             },
             close: function() {
                 MWSidebar.loadSettings();
+                MWSidebar.update();
+                MWSidebar.updateOther();
             }
         });
         MWSidebar.helper.addGlobalStyle(GM_getResourceText("JQUI_CSS"));
