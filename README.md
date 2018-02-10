@@ -1,23 +1,23 @@
 ## Steemit Sidebar
 ### What is the project about?
 This is a Tampermonkey-Script designed to show a bar on the left side of steemit with a few practical links and informations about the current user (editable with an input field) and the user that is currently displayed (profil or posts).
-![image.png](https://res.cloudinary.com/hpiynhbhq/image/upload/v1517080990/jya2bp5ij0zbgod2ttwa.png)
+![image.png](https://steemitimages.com/DQmdSuFHGoyBBFGk5d1Yp6YUnh9PSM4k5TB61bDvVyELzrk/image.png)
 
-You can currently see the current Reputation, Voting Power and SteemPower (the link brings you to the steemit profil, as well as the wallet). 
+You can currently see the current Reputation, Voting Power, Bandwidth and SteemPower (the link brings you to the steemit profil, as well as the wallet). 
 Furthermore you can use the links to open a new tab to another website with further Informations to the profil. 
 
 ### Technology Stack
 - Like mentioned it is implemented as a **Tampermonkey-Script**, so the appropriate browser extension is needed to install it. (If anybody needs help with this, just text me, I'm glad to help) 
 - It's programmed in **Javascript** and runs directly **in the browser**. 
-- It saves the user that is written in the "Username" input field in a cookie. It should work just fine without cookies enabled, but then you would have to input your name everytime you want to see the infos about yourself.
+- You can configure what links to display and what color the bars should have (with many more settings to come!). It saves the settings using tampermonkey magic
 - Uses **jQuery**, **Moment.js** and the **Steemit Javascript API**. 
 - Tested in **Chrome** and **Firefox**
 
 ### Roadmap
 - Implementing more features and convenience tool for users
-- Make more things customizable (which links to display, etc.)
-- Make the sidebar collapsible so it doesn't take any space if you don't need it at the moment 
+- Make more things customizable
 - Of course fixing any bugs that would appear.
+- Look into the open issues on [Github](https://github.com/MWFIAE/Steemit-Sidebar/issues)
 
 ### How to contribute?
 You can come in contact with me with the usual methods:
