@@ -269,7 +269,8 @@ unsafeWindow.MWSidebar ={
         barColorLow: "#FF0000",
         barColorHigh: "#00FF00",
         links: DEFAULT_LINKS,
-        side: "left"
+        side: "left",
+        lastSaved: 0,
     },
     helper:{
         regexVariable: new RegExp("{{([^}]*)}}", "gim"),
@@ -608,6 +609,7 @@ unsafeWindow.MWSidebar ={
         MWSidebar.settings.barColorHigh = MWSidebar.getSetting("mw-barColorHigh", "#00FF00");
         MWSidebar.settings.barColorLow = MWSidebar.getSetting("mw-barColorLow", "#FF0000");
         MWSidebar.settings.side = MWSidebar.getSetting("mw-side", "left");
+        MWSidebar.settings.lastSaved = MWSidebar.getSetting("mw-lastSaved", 0);
 
         let collapsed = MWSidebar.getSetting("mw-collapsed", false);
         MWSidebar.settings.collapsed = collapsed==true || collapsed=="true";
@@ -619,12 +621,14 @@ unsafeWindow.MWSidebar ={
             MWSidebar.settings.links = JSON.parse(json);
     },
     saveSettings: function(){
+        MWSidebar.settings.lastSaved = moment.utc().valueOf();
         MWSidebar.setSetting("mw-username", MWSidebar.settings.username);
         MWSidebar.setSetting("mw-collapsed", MWSidebar.settings.collapsed);
         MWSidebar.setSetting("mw-barColorHigh", MWSidebar.settings.barColorHigh);
         MWSidebar.setSetting("mw-barColorLow", MWSidebar.settings.barColorLow);
         MWSidebar.setSetting("mw-links", JSON.stringify(MWSidebar.settings.links));
         MWSidebar.setSetting("mw-side", MWSidebar.settings.side);
+        MWSidebar.setSetting("mw-lastSaved", MWSidebar.settings.lastSaved);
     },
     setup: function() {
         MWSidebar.loadSettings();
@@ -711,6 +715,12 @@ unsafeWindow.MWSidebar ={
     doUpdateGlobalProperties: function(){
         MWSidebar.updateGlobalProperties();
         setTimeout(MWSidebar.doUpdateGlobalProperties, 60000); // Jede Minute die neuen Properties holen
+    },
+    doReloadSettings: function(){
+        let latest=MWSidebar.getSetting("mw-lastSaved",0)
+        if(latest>MWSidebar.settings.lastSaved)
+            MWSidebar.loadSettings();
+        setTimeout(MWSidebar.doReloadSettings, 1000); // Jede Sekunde prüfen ob neue Einstellungen vorhanden sind
     }
 }
 
@@ -726,5 +736,6 @@ $(document).ready(function () {
         MWSidebar.doUpdate();
         MWSidebar.doUpdateOther();
         MWSidebar.doUpdateGlobalProperties();
+        MWSidebar.doReloadSettings();
     });
 });
