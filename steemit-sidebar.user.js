@@ -360,6 +360,8 @@ unsafeWindow.MWSidebar ={
 
             jQuery('#mw-barColorHigh').change(MWSidebar.ui.changeBarColorHigh);
             jQuery('#mw-barColorLow').change(MWSidebar.ui.changeBarColorLow);
+
+            $("#mw-sidebarSide").val(MWSidebar.settings.side) //initialize with the current value.
             jQuery('#mw-sidebarSide').change(MWSidebar.ui.changeSidebarSide);
 
             jQuery("#mw-restore-links").click(MWSidebar.ui.restoreLinks);
