@@ -211,6 +211,9 @@ const TEMPLATE_SETTINGS_MENU = `
          <td><input id="mw-barColorHigh" style="min-width:50px" class="mw-inline" type="color" value="{{settings.barColorHigh}}"/></td>
       </tr>
       <tr>
+         <td colspan=4 style="color:red">The following settings require a site-refresh (F5).</td>
+      </tr>
+      <tr>
          <td>Sidebar-Side</td>
          <td>
              <select id="mw-sidebarSide" style="min-width:50px" class="mw-inline" value="{{settings.barColorLow}}">
@@ -218,7 +221,12 @@ const TEMPLATE_SETTINGS_MENU = `
                 <option value="right">right</option>
              </select>
          </td>
-         <td colspan=2 style="color:red">This requires a site-refresh (F5).</td>
+         <td>Language</td>
+         <td>
+             <select id="mw-language" style="min-width:50px" class="mw-inline" value="{{settings.language}}">
+                <option value="en">English</option>
+             </select>
+         </td>
       </tr>
     </table>
   </div>
@@ -365,6 +373,10 @@ unsafeWindow.MWSidebar ={
             $("#mw-sidebarSide").val(MWSidebar.settings.side) //initialize with the current value.
             jQuery('#mw-sidebarSide').change(MWSidebar.ui.changeSidebarSide);
 
+            $("#mw-language").val(MWSidebar.settings.language) //initialize with the current value.
+            jQuery('#mw-language').change(MWSidebar.ui.changeLanguage);
+
+
             jQuery("#mw-restore-links").click(MWSidebar.ui.restoreLinks);
             jQuery(".mw-button-delete-link").click(MWSidebar.ui.deleteLink);
             jQuery(".mw-button-add-link").click(MWSidebar.ui.addLink);
@@ -378,6 +390,11 @@ unsafeWindow.MWSidebar ={
         },
         changeSidebarSide: function(){
             MWSidebar.settings.side = $("#mw-sidebarSide").val();
+        },
+        changeLanguage: function(){
+            MWSidebar.settings.language = $("#mw-language").val();
+            MWSidebar.update();
+            MWSidebar.updateOther();
         },
         changeBarColorLow: function(){
             MWSidebar.settings.barColorLow= $("#mw-barColorLow").val();
@@ -609,6 +626,7 @@ unsafeWindow.MWSidebar ={
         MWSidebar.settings.barColorHigh = MWSidebar.getSetting("mw-barColorHigh", "#00FF00");
         MWSidebar.settings.barColorLow = MWSidebar.getSetting("mw-barColorLow", "#FF0000");
         MWSidebar.settings.side = MWSidebar.getSetting("mw-side", "left");
+        MWSidebar.settings.language = MWSidebar.getSetting("mw-language", "en");
         MWSidebar.settings.lastSaved = MWSidebar.getSetting("mw-lastSaved", 0);
 
         let collapsed = MWSidebar.getSetting("mw-collapsed", false);
@@ -628,6 +646,7 @@ unsafeWindow.MWSidebar ={
         MWSidebar.setSetting("mw-barColorLow", MWSidebar.settings.barColorLow);
         MWSidebar.setSetting("mw-links", JSON.stringify(MWSidebar.settings.links));
         MWSidebar.setSetting("mw-side", MWSidebar.settings.side);
+        MWSidebar.setSetting("mw-language", MWSidebar.settings.language);
         MWSidebar.setSetting("mw-lastSaved", MWSidebar.settings.lastSaved);
     },
     setup: function() {
@@ -705,18 +724,17 @@ unsafeWindow.MWSidebar ={
     doUpdate: function(){
         MWSidebar.update();
         setTimeout(MWSidebar.doUpdate, 10000); //Alle 10 Sekunden das eigene Profil updaten
-        //setInterval(MWSidebar.update, 10000);
     },
     doUpdateOther: function(){
         MWSidebar.updateOther();
         setTimeout(MWSidebar.doUpdateOther, 100); //Jede 1/10 Sekunde überprüfen ob man jetzt das Profil eines anderen Users offen hat :)
-        //setInterval(MWSidebar.update, 10000);
     },
     doUpdateGlobalProperties: function(){
         MWSidebar.updateGlobalProperties();
         setTimeout(MWSidebar.doUpdateGlobalProperties, 60000); // Jede Minute die neuen Properties holen
     },
     doReloadSettings: function(){
+        //Falls eine neuere Version der Settings existiert Settings neu laden
         let latest=MWSidebar.getSetting("mw-lastSaved",0)
         if(latest>MWSidebar.settings.lastSaved)
             MWSidebar.loadSettings();
