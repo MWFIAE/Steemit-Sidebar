@@ -2,7 +2,7 @@
 // @name         Steemit-Sidebar
 // @namespace    http://tampermonkey.net/
 // @copyright 2018, mwfiae (https://steemit.com/@mwfiae)
-// @version      0.5.1
+// @version      0.6.0
 // @description  try to take over the world!
 // @author       MWFIAE
 // @match        http*://steemit.com/*
@@ -19,6 +19,7 @@
 // @require https://code.jquery.com/ui/1.12.1/jquery-ui.min.js
 // @resource JQUI_CSS https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css
 // @updateURL https://openuserjs.org/meta/mwfiae/Steemit-Sidebar.meta.js
+// @noframes
 // ==/UserScript==
 /* jshint -W097 */
 'use strict';
@@ -218,7 +219,10 @@ width: 100%;
 <span id="mw-bandwidth-bar-text-{{temp.target}}" class="mw-nowrap" nowrap>{{temp.bw_c}} \/ {{temp.bw_m}}</span>
 <div id="mw-bandwidth-bar-{{temp.target}}"></div>
 </div>
+<div class="mw-tooltip">
 {{i18n.sp}}: <a href="https://steemit.com/@{{user.name}}/transfers">{{user.sp}}</a>
+<div class="mw-tooltiptext">Own: {{user.ownSp}}<br>Received: {{user.recSp}}<br>Delegated: {{user.delSp}}<br></div>
+</div>
 </p>
 <ul class="mw-ul">
 {{temp.links}}
@@ -640,7 +644,10 @@ let MWSidebar ={
         newData.received_vesting_shares = parseFloat(newData.received_vesting_shares.replace(" VESTS",""));
         effective_vesting_shares= newData.vesting_shares - newData.delegated_vesting_shares + newData.received_vesting_shares;
         newData.sp= MWSidebar.globalProps.totalVestingFund * (effective_vesting_shares / MWSidebar.globalProps.totalVestingShares)
-        
+        newData.ownSp= (MWSidebar.globalProps.totalVestingFund * ( newData.vesting_shares / MWSidebar.globalProps.totalVestingShares)).toFixed(3)
+        newData.recSp= (MWSidebar.globalProps.totalVestingFund * (newData.received_vesting_shares / MWSidebar.globalProps.totalVestingShares)).toFixed(3)
+        newData.delSp= (MWSidebar.globalProps.totalVestingFund * (newData.delegated_vesting_shares / MWSidebar.globalProps.totalVestingShares)).toFixed(3)
+
         newData.sp = newData.sp.toFixed(3);
 
         let bandwidthData= MWSidebar.calcBandwidth(newData);
