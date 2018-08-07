@@ -2,7 +2,7 @@
 // @name         Steemit-Sidebar
 // @namespace    http://tampermonkey.net/
 // @copyright 2018, mwfiae (https://steemit.com/@mwfiae)
-// @version      0.6.0
+// @version      0.6.1
 // @description  try to take over the world!
 // @author       MWFIAE
 // @match        http*://steemit.com/*
@@ -305,6 +305,12 @@ const DEFAULT_LINKS=[
 steem.api.setOptions({
     url: 'https://api.steemit.com'
 });
+
+// store the Private Posting Key in the userscript section, so other script can't as easily access it.
+// NOTE: even without steemit sidebar it's already very easy for other script to do the same and read the private key.
+//       so I don't consider this as an vulnerability that the steemit sidebar opens, malicious scripts do have easier
+//       and more guaranteed ways to steal the key
+var privPostKey= null;
 
 console.log("Starting....");
 
@@ -809,6 +815,13 @@ let MWSidebar ={
         else
             MWSidebar.settings.links = JSON.parse(json);
 
+        const autopost2 = localStorage.getItem('autopost2');
+        if (autopost2) {
+            [username, password, memoWif, login_owner_pubkey] = MWSidebar.helper.hex2ascii(autopost2,'hex').toString().split('\t');
+            privPostKey = password; //This will be used for upcoming voting features
+            if(!MWSidebar.settings.username|| MWSidebar.settings.username=="")
+                MWSidebar.settings.username = username;
+        }
     },
     /**
      * Save all settings
