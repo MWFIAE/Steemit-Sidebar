@@ -24,6 +24,8 @@
 'use strict';
 // At this point I just want to say 'thank you!' to @therealwolf
 // without his help and example coding I wouldn't have 'finished' the project this fast
+
+// Handle multiple languages (only english for now)
 const I18N = {
     "en":{
         "username": "Username",
@@ -49,6 +51,8 @@ const I18N = {
     },
 
 }
+
+// This is the html template for the main area of the sidebar, without the user templates(TEMPLATE_WITH_USER) rendered
 const TEMPLATE_WITHOUT_USER = `
 <style>
 .ui-tabs{ height:100%; }
@@ -58,56 +62,56 @@ const TEMPLATE_WITHOUT_USER = `
 .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; }
 .ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: left; width: 80%; }
 .ui-button .ui-icon.ui-icon-closethick {
-	background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAVlJREFUOI2Fkj9rwkAYh3+XJleCgYwnUcT+gX4ClyztUCl063dRkiGDDoeDfgMd7isILYRO7ZRvUCoNKMFAbusQcO1iSoiX+NsO3ud533vv0Gq1bM55KISI2+32Fc6k2+3eCSFiznlIKTUJ5zwcDAZPACClTMbj8UOWZds6eDabvTPGegAQRdGb1ul0bosCxlhvPp9/qCapwgDgOM615nneo5QyaZKo4DRN4yAInskR6i8Wi89yQXEdXdepCvZ9fyil3JFSZ6WkmEoFA8C/oE5SThU+ETRJVDAAaFWBYRiXqu66rlNCyEnDi/JBte0ilmXZruu+RFG0zvP890RQ91SHwyG3LMuuk5Am2Pf9IQDUPXGWZVvSBBcLa/onRAgRO45zUwcXUUmSJNloaZr+nIOPHXej0ei+/O33+/0GlFJzOp2+LpfLL8ZYvwpWwxjrr1ar78lksqaUmn9KJe5VUzwlIQAAAABJRU5ErkJggg==') !important;
+background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAVlJREFUOI2Fkj9rwkAYh3+XJleCgYwnUcT+gX4ClyztUCl063dRkiGDDoeDfgMd7isILYRO7ZRvUCoNKMFAbusQcO1iSoiX+NsO3ud533vv0Gq1bM55KISI2+32Fc6k2+3eCSFiznlIKTUJ5zwcDAZPACClTMbj8UOWZds6eDabvTPGegAQRdGb1ul0bosCxlhvPp9/qCapwgDgOM615nneo5QyaZKo4DRN4yAInskR6i8Wi89yQXEdXdepCvZ9fyil3JFSZ6WkmEoFA8C/oE5SThU+ETRJVDAAaFWBYRiXqu66rlNCyEnDi/JBte0ilmXZruu+RFG0zvP890RQ91SHwyG3LMuuk5Am2Pf9IQDUPXGWZVvSBBcLa/onRAgRO45zUwcXUUmSJNloaZr+nIOPHXej0ei+/O33+/0GlFJzOp2+LpfLL8ZYvwpWwxjrr1ar78lksqaUmn9KJe5VUzwlIQAAAABJRU5ErkJggg==') !important;
 }
 
 #mw-script-container{
-    position: fixed;
-    float: left;
-    padding-top: 2.5rem;
-    padding-left: 2em;
-    padding-right: 2em;
-    height:100vh;
-    overflow-y: auto;
-    z-index: 5;
-    width: 200px;
-    display: grid;
-    grid-template-rows: 1fr 80px;
-    grid-template-columns: 1fr;
+position: fixed;
+float: left;
+padding-top: 2.5rem;
+padding-left: 2em;
+padding-right: 2em;
+height:100vh;
+overflow-y: auto;
+z-index: 5;
+width: 200px;
+display: grid;
+grid-template-rows: 1fr 80px;
+grid-template-columns: 1fr;
 }
 .mw-right#mw-script-container{
-    right: 0;
+right: 0;
 }
 #mw-main{
-  grid-row-start:1;
-  grid-row-end:1;
+grid-row-start:1;
+grid-row-end:1;
 }
 #mw-footer{
-  grid-row-start:2;
-  grid-row-end:2;
+grid-row-start:2;
+grid-row-end:2;
 }
 #mw-collapse-button{
-    float: left;
-    margin-left: 110px;
-    z-index: 100;
-    position: fixed;
-    cursor: pointer;
-    font-weight: bolder;
-    margin-top: -16px;
+float: left;
+margin-left: 110px;
+z-index: 100;
+position: fixed;
+cursor: pointer;
+font-weight: bolder;
+margin-top: -16px;
 }
 #mw-settings{
-    float: left;
-    z-index: 100;
-    cursor: pointer;
-    position: relative;
-    top: -15px;
-    left: -28px;
+float: left;
+z-index: 100;
+cursor: pointer;
+position: relative;
+top: -15px;
+left: -28px;
 }
 .theme-dark #mw-script-container, .theme-dark #mw-button{
-    background-color: #1C252B;
+background-color: #1C252B;
 }
 .theme-light #mw-script-container, .theme-light #mw-button{
-    background-color: #fcfcfc;
+background-color: #fcfcfc;
 }
 #username{display: inline;}
 .mw-favicon{width:16px; height: 16px}
@@ -116,37 +120,38 @@ const TEMPLATE_WITHOUT_USER = `
 .mw-nowrap{}
 /* Tooltip container */
 .mw-tooltip {
-    position: relative;
-    display: inline-block;
+position: relative;
+display: inline-block;
 }
 
 /* Tooltip text */
 .mw-tooltip .mw-tooltiptext {
-    visibility: hidden;
-    width: 120px;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    padding: 5px 0;
-    border-radius: 6px;
+visibility: hidden;
+width: 120px;
+background-color: #555;
+color: #fff;
+text-align: center;
+padding: 5px 0;
+border-radius: 6px;
 
-    /* Position the tooltip text */
-    position: absolute;
-    z-index: 1;
-    bottom: 125%;
-    left: 50%;
-    margin-left: -60px;
+/* Position the tooltip text */
+position: absolute;
+z-index: 1;
+bottom: 125%;
+left: 50%;
+margin-left: -60px;
 
-    /* Fade in tooltip */
-    opacity: 0;
-    transition: opacity 0.3s;
+/* Fade in tooltip */
+opacity: 0;
+transition: opacity 0.3s;
 }
 
 
 /* Show the tooltip text when you mouse over the tooltip container */
 .mw-tooltip:hover .mw-tooltiptext {
-    visibility: visible;
-    opacity: 1;
+visibility: visible;
+opacity: 1;
+width: 100%;
 }
 </style>
 <div id="mw-script-container" class="mw-{{settings.side}}">
@@ -164,6 +169,8 @@ const TEMPLATE_WITHOUT_USER = `
 </div>
 </div>
 `;
+
+// This is the template for the users that will be rendered inside the main template (TEMPLATE_WITHOUT_USER)
 const TEMPLATE_WITH_USER = `
 <div id="{{temp.target}}">
 <p>
@@ -187,9 +194,9 @@ float: left;
 width: 100%;
 }
 </style>
-  <span id="mw-votepower-bar-text-{{temp.target}}">{{user.trueVotePower}}%</span>
-  <div id="mw-votepower-bar-{{temp.target}}"></div>
-  <div class="mw-tooltiptext">{{i18n.full}}:<br />{{user.voteSpan}}<br />{{user.voteTime}}</div>
+<span id="mw-votepower-bar-text-{{temp.target}}">{{user.trueVotePower}}%</span>
+<div id="mw-votepower-bar-{{temp.target}}"></div>
+<div class="mw-tooltiptext">{{i18n.full}}:<br />{{user.voteSpan}}<br />{{user.voteTime}}</div>
 </div>
 <span>{{i18n.bandwidth}} <span style="font-size: 0.8em">{{temp.bw_p}}%</span></span>
 <div id="mw-bandwidth-{{temp.target}}" style="width:100%;background-color: lightgrey;">
@@ -219,61 +226,67 @@ width: 100%;
 </div>
 `;
 
+// This is the template for the settings menu
 const TEMPLATE_SETTINGS_MENU = `
 <div id="mw-settings-window" title="{{i18n.settings_title}}">
 <div id="tabs">
-  <ul>
-    <li><a href="#tabs-1">{{i18n.settings_tab1}}</a></li>
-    <li><a href="#tabs-2">{{i18n.settings_tab2}}</a></li>
-  </ul>
-  <div id="tabs-1">
-    <table>
-      <tr>
-         <td>{{i18n.settings_barcolor_low}}</td>
-         <td><input id="mw-barColorLow" style="min-width:50px" class="mw-inline" type="color" value="{{settings.barColorLow}}"/></td>
+<ul>
+<li><a href="#tabs-1">{{i18n.settings_tab1}}</a></li>
+<li><a href="#tabs-2">{{i18n.settings_tab2}}</a></li>
+</ul>
+<div id="tabs-1">
+<table>
+<tr>
+<td>{{i18n.settings_barcolor_low}}</td>
+<td><input id="mw-barColorLow" style="min-width:50px" class="mw-inline" type="color" value="{{settings.barColorLow}}"/></td>
 
-         <td>{{i18n.settings_barcolor_high}}</td>
-         <td><input id="mw-barColorHigh" style="min-width:50px" class="mw-inline" type="color" value="{{settings.barColorHigh}}"/></td>
-      </tr>
-      <tr>
-         <td colspan=4 style="color:red">{{i18n.settings_warn_refresh}}</td>
-      </tr>
-      <tr>
-         <td>{{i18n.settings_sidebar_side}}</td>
-         <td>
-             <select id="mw-sidebarSide" style="min-width:50px" class="mw-inline" value="{{settings.barColorLow}}">
-                <option value="left">{{i18n.settings_sidebar_side_left}}</option>
-                <option value="right">{{i18n.settings_sidebar_side_right}}</option>
-             </select>
-         </td>
-         <td>{{i18n.settings_language}}</td>
-         <td>
-             <select id="mw-language" style="min-width:50px" class="mw-inline" value="{{settings.language}}">
-                <option value="en">{{i18n.settings_language_en}}</option>
-             </select>
-         </td>
-      </tr>
-    </table>
-  </div>
-  <div id="tabs-2" style="overflow-y: auto">
-    <input class="mw-button" type="button" id="mw-restore-links" value="{{i18n.settings_restore_links}}"/>
-    <table id="mw-link-table">
-      <tr><th>{{i18n.settings_links_icon}}</th><th>{{i18n.settings_links_url}}</th><th>{{i18n.settings_links_text}}</th></tr>
-      <tr>
-        <td><input id="mw-new-link-icon" type="text" value="" /></td>
-        <td><input id="mw-new-link-url" type="text" value="" /></td>
-        <td><input id="mw-new-link-text" type="text" value="" /></td>
-        <td><input class="mw-button mw-button-add-link" style="background-color:lightgreen" type="button" value="+" /></td>
-      </tr>
-      {{links}}
-    </table>
-  </div>
+<td>{{i18n.settings_barcolor_high}}</td>
+<td><input id="mw-barColorHigh" style="min-width:50px" class="mw-inline" type="color" value="{{settings.barColorHigh}}"/></td>
+</tr>
+<tr>
+<td colspan=4 style="color:red">{{i18n.settings_warn_refresh}}</td>
+</tr>
+<tr>
+<td>{{i18n.settings_sidebar_side}}</td>
+<td>
+<select id="mw-sidebarSide" style="min-width:50px" class="mw-inline" value="{{settings.barColorLow}}">
+<option value="left">{{i18n.settings_sidebar_side_left}}</option>
+<option value="right">{{i18n.settings_sidebar_side_right}}</option>
+</select>
+</td>
+<td>{{i18n.settings_language}}</td>
+<td>
+<select id="mw-language" style="min-width:50px" class="mw-inline" value="{{settings.language}}">
+<option value="en">{{i18n.settings_language_en}}</option>
+</select>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs-2" style="overflow-y: auto">
+<input class="mw-button" type="button" id="mw-restore-links" value="{{i18n.settings_restore_links}}"/>
+<table id="mw-link-table">
+<tr><th>{{i18n.settings_links_icon}}</th><th>{{i18n.settings_links_url}}</th><th>{{i18n.settings_links_text}}</th></tr>
+<tr>
+<td><input id="mw-new-link-icon" type="text" value="" /></td>
+<td><input id="mw-new-link-url" type="text" value="" /></td>
+<td><input id="mw-new-link-text" type="text" value="" /></td>
+<td><input class="mw-button mw-button-add-link" style="background-color:lightgreen" type="button" value="+" /></td>
+</tr>
+{{links}}
+</table>
+</div>
 </div>
 </div>
 `;
+
+// This is the template how a single link should be rendered in the main view
 const TEMPLATE_LINK = `<li><a href="{{link.url}}" target="_blank"><img class="mw-favicon" src="{{link.icon}}" />{{link.text}}</a></li>`;
+
+// This is the template how a single link should be rendered in the settings view (editable)
 const TEMPLATE_LINK_SETTINGS = `<tr><td><img class="mw-favicon" src="{{link.icon}}" /></td><td>{{link.url}}</td><td>{{link.text}}</td><td><input class="mw-button mw-button-delete-link" style="background-color:pink" type="button" value="x" /></td></tr>`;
 
+// various default links that are included for the convencience of the users
 const DEFAULT_LINKS=[
     {url: "https://steemd.com/@{{user.name}}", icon: "https://steemd.com/favicon-steem9.png", text: "Steemd"},
     {url: "https://steemworld.org/@{{user.name}}", icon: "https://steemworld.org/favicon.png", text: "Steemworld"},
@@ -283,42 +296,64 @@ const DEFAULT_LINKS=[
     {url: "https://dmania.lol/profile/{{user.name}}", icon: "https://dmania.lol/favicon.ico", text: "D.Mania"},
     {url: "https://alpha.steepshot.io/@{{user.name}}", icon: "https://alpha.steepshot.io/static/images/faviconNew.ico", text: "Steepshot"},
 ];
+
+// use the steemit api node
 steem.api.setOptions({
-  url: 'https://api.steemit.com'
+    url: 'https://api.steemit.com'
 });
-//Attaching it to the window of the current site to make debugging alot easier :)
-unsafeWindow.MWSidebar ={
-    otherUsername: null,
-    settingsMenu: null,
-    globalProps:{
+
+console.log("Starting....");
+
+//Initialize the main object;
+let MWSidebar ={
+    otherUsername: null,             // the name of the "second" user
+    settingsMenu: null,              // a reference to the settings menu
+    globalProps:{                    // the globalProps are filled by an api call
         totalVestingFund: 0,
         totalVestingShares: 0,
         maxVirtualBandwidth: 0,
     },
-    settings: {
-        username: null,
+    settings: {                      // All the settings that are currently saved for the user and can be edited via the settings menu
+        username: null,              // The username entered
         dateTimeFormat: 'DD.MM. HH:mm:ss',
-        collapsed: false,
-        barColorLow: "#FF0000",
-        barColorHigh: "#00FF00",
-        links: DEFAULT_LINKS,
-        side: "left",
-        lastSaved: 0,
+        collapsed: false,            // If the sidebar should be collapsed/minimized
+        barColorLow: "#FF0000",      // The color of the various bars if they get low
+        barColorHigh: "#00FF00",     // The color of the various bars if they get high
+        links: DEFAULT_LINKS,        // The links that will be rendered
+        side: "left",                // The side of the sidebar
+        lastSaved: 0,                // The moment the settings were saved, is used by other tabs to auto update
     },
-    helper:{
+    /**
+     * Some helper variables/functions
+     */
+    helper:{ //Some helper variables/functions
+        // The regex to find a mustache style variable (used by my rendering functions)
         regexVariable: new RegExp("{{([^}]*)}}", "gim"),
-        lerpColor: function(a, b, amount) {
 
-           var ah = parseInt(a.replace(/#/g, ''), 16),
-               ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
-               bh = parseInt(b.replace(/#/g, ''), 16),
-               br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,
-               rr = ar + amount * (br - ar),
-               rg = ag + amount * (bg - ag),
-               rb = ab + amount * (bb - ab);
+        /**
+         * Linear interpolates between colors, used by the progress bars.
+         * @param {string} startColor - The color to lerp from.
+         * @param {string} endColor - The color to lerp to.
+         * @param {number} amount - The amount of lerp inbetween (0 - 1).
+         * @return {string} A color that lies between @startColor and @endColor.
+         */
+        lerpColor: function(startColor, endColor, amount) {
+
+            var ah = parseInt(startColor.replace(/#/g, ''), 16),
+                ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
+                bh = parseInt(endColor.replace(/#/g, ''), 16),
+                br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,
+                rr = ar + amount * (br - ar),
+                rg = ag + amount * (bg - ag),
+                rb = ab + amount * (bb - ab);
 
             return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
         },
+        /**
+         * Make the amount of bytes readable by humans.
+         * @param {number} bytes - The amount of bytes.
+         * @return {string} A string representing a human readable amount of bytes
+         */
         prettyPrintBytes: function(bytes){
 
             if(Math.abs(bytes)>1000*1000*1000*1000)
@@ -331,28 +366,46 @@ unsafeWindow.MWSidebar ={
                 return (bytes/1000).toFixed(2)+" KB";
             return bytes+" B"
         },
-        formatSeconds: function(timeForVotePower){
-            let voteSpan = "";
-            if(timeForVotePower>24*60*60){
-                let days=parseInt(timeForVotePower/(24*60*60));
-                timeForVotePower -= days*24*60*60;
-                voteSpan = voteSpan + days+"d ";
+        /**
+         * Make a human readable timespan out of seconds.
+         * @param {number} seconds - The amount of seconds.
+         * @return {string} A string representing a human readable timespan.
+         */
+        formatSeconds: function(seconds){
+            let timeSpan = "";
+            if(seconds>24*60*60){
+                let days=parseInt(seconds/(24*60*60));
+                seconds -= days*24*60*60;
+                timeSpan = timeSpan + days+"d ";
             }
-            if(timeForVotePower>60*60){
-                let hours=parseInt(timeForVotePower/(60*60));
-                timeForVotePower -= hours*60*60;
-                voteSpan = voteSpan + hours+"h ";
+            if(seconds>60*60){
+                let hours=parseInt(seconds/(60*60));
+                seconds -= hours*60*60;
+                timeSpan = timeSpan + hours+"h ";
             }
-            if(timeForVotePower>60){
-                let minutes=parseInt(timeForVotePower/60);
-                timeForVotePower -= minutes*60;
-                voteSpan = voteSpan + minutes+"m ";
+            if(seconds>60){
+                let minutes=parseInt(seconds/60);
+                seconds -= minutes*60;
+                timeSpan = timeSpan + minutes+"m ";
             }
-            return voteSpan;
+            return timeSpan;
         },
+        /**
+         * Appends custom css globally.
+         * @param {string} css - The css to append.
+         * @param {string} id - The id of the generated style block
+         */
         addGlobalStyle: function(css, id) {
             $("head:first").append($('<style' + (id !== undefined ? ' id="' + id + '"' : '') + ' type="text/css">' + css + '</style>'));
         },
+
+        /**
+         * Replaces the variables in a template with a maximum depth of 5.
+         * @param {string} template - The template which should be processed.
+         * @param {object} values - An object holding all the values.
+         * @param {number} depth - The current depth we are at.
+         * @return {string} The processed template.
+         */
         fillTemplate: function(template, values, depth){
 
             if(depth==undefined)
@@ -378,14 +431,34 @@ unsafeWindow.MWSidebar ={
             };
             return result;
         },
+        /**
+         * Converts a hex string into an ascii string.
+         * @param {string} hexx - The hex string to process.
+         * @return {string} The resulting ascii string.
+         */
+        hex2ascii: function(hexx){
+            var hex = hexx.toString();//force conversion
+            var str = '';
+            for (var i = 0; i < hex.length; i += 2)
+                str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+            return str;
+        },
     },
+    /**
+     * Functions that are called by the ui
+     */
     ui: {
-
+        /**
+         * Toggle the collapse state of the Sidebar, saves the settings and rerenders the sidebar (so the state change takes effect)
+         */
         toggleCollapse: function(){
             MWSidebar.settings.collapsed = ! MWSidebar.settings.collapsed;
             MWSidebar.saveSettings();
             MWSidebar.refreshCollapse();
         },
+        /**
+         * Opens the settings menu and wires the events
+         */
         openSettings: function (){
             console.log("opening Settings...");
             MWSidebar.settingsMenu.dialog("open");
@@ -413,27 +486,45 @@ unsafeWindow.MWSidebar ={
                 'top':'0px'
             });*/
         },
+        /**
+         * Changes the side where the sidebar is rendered
+         */
         changeSidebarSide: function(){
             MWSidebar.settings.side = $("#mw-sidebarSide").val();
         },
+        /**
+         * Change the users language.
+         */
         changeLanguage: function(){
             MWSidebar.settings.language = $("#mw-language").val();
             MWSidebar.update();
             MWSidebar.updateOther();
         },
+        /**
+         * Change the "low" color of the progress bars.
+         */
         changeBarColorLow: function(){
             MWSidebar.settings.barColorLow= $("#mw-barColorLow").val();
             MWSidebar.update();
             MWSidebar.updateOther();
         },
+        /**
+         * Change the "high" color of the progress bars.
+         */
         changeBarColorHigh: function(){
             MWSidebar.settings.barColorHigh= $("#mw-barColorHigh").val();
             MWSidebar.update();
             MWSidebar.updateOther();
         },
+        /**
+         * Remove all links from the dom link table
+         */
         removeAllLinks: function(){
             jQuery("#mw-link-table tr:has(.mw-button-delete-link)").remove();
         },
+        /**
+         * (Re-)Adds all the links to the dom link table
+         */
         addAllLinks: function(){
             jQuery("#mw-link-table").append(MWSidebar.settings.links.reduce((result,link)=>{
                 return result + MWSidebar.helper.fillTemplate(TEMPLATE_LINK_SETTINGS, {link: link, i18n: I18N[MWSidebar.settings.language]}, 5);
@@ -443,6 +534,9 @@ unsafeWindow.MWSidebar ={
             MWSidebar.doUpdate();
             MWSidebar.doUpdateOther();
         },
+        /**
+         * Add a link to the saved links and rerenders everything
+         */
         addLink: function(){
             let icon = jQuery("#mw-new-link-icon").val();
             let url = jQuery("#mw-new-link-url").val();
@@ -464,6 +558,9 @@ unsafeWindow.MWSidebar ={
             MWSidebar.ui.removeAllLinks()
             MWSidebar.ui.addAllLinks();
         },
+        /**
+         * Permanently deletes a link from the settings and dom
+         */
         deleteLink: function(e){
             var i= jQuery(".mw-button-delete-link").index(e.target);
             MWSidebar.settings.links.splice(i, 1);
@@ -471,6 +568,9 @@ unsafeWindow.MWSidebar ={
             MWSidebar.ui.removeAllLinks()
             MWSidebar.ui.addAllLinks();
         },
+        /**
+         * (Re-)Adds all the links to the dom link table
+         */
         restoreLinks: function(){
             MWSidebar.settings.links = DEFAULT_LINKS.slice(0);
             MWSidebar.saveSettings();
@@ -479,6 +579,11 @@ unsafeWindow.MWSidebar ={
         }
     },
 
+    /**
+     * Calculates the bandwidth for a user
+     * @param {object} data - The user data.
+     * @return {array} An array containing the new bandwidth, the allocated bandwidth and the remaining bandwidth (in percent).
+     */
     calcBandwidth: function(data){
         const STEEMIT_BANDWIDTH_AVERAGE_WINDOW_SECONDS = 60 * 60 * 24 * 7;
         let vestingShares = parseFloat(data.vesting_shares)
@@ -500,6 +605,12 @@ unsafeWindow.MWSidebar ={
 
         return [new_bandwidth, bandwidthAllocated, remaining];
     },
+
+    /**
+     * Processes and formats the raw user data from the api.
+     * @param {object} newData - the raw user data from the api.
+     * @return {object} The processed and formatted data.
+     */
     updateUser: function(newData) {
         if (newData == undefined) {
             user = null;
@@ -529,7 +640,7 @@ unsafeWindow.MWSidebar ={
         newData.received_vesting_shares = parseFloat(newData.received_vesting_shares.replace(" VESTS",""));
         effective_vesting_shares= newData.vesting_shares - newData.delegated_vesting_shares + newData.received_vesting_shares;
         newData.sp= MWSidebar.globalProps.totalVestingFund * (effective_vesting_shares / MWSidebar.globalProps.totalVestingShares)
-
+        
         newData.sp = newData.sp.toFixed(3);
 
         let bandwidthData= MWSidebar.calcBandwidth(newData);
@@ -540,6 +651,11 @@ unsafeWindow.MWSidebar ={
         return newData;
     },
 
+    /**
+     * Update the dom from the new user data
+     * @param {string} target - The id of the target dom element.
+     * @param {object} user - The new user data.
+     */
     updateDisplay :function(target, user) {
         if (user == undefined)
             return;
@@ -563,6 +679,12 @@ unsafeWindow.MWSidebar ={
         jQuery('#mw-script-container').niceScroll({cursorcolor:"lightblue"});
         MWSidebar.refreshCollapse();
     },
+
+    /**
+     * Refresh user data and updates the dom
+     * @param {string} account - The (new) accountname.
+     * @param {string} target - The id of the target dom element.
+     */
     updateAccountInfo : function updateAccountInfo(account, target) {
         if (account == null || account == "") {
             jQuery("#" + target).replaceWith('<div id="{target}"></div>'.replace("{target}", target));
@@ -578,9 +700,16 @@ unsafeWindow.MWSidebar ={
             MWSidebar.updateDisplay(target, user);
         });
     },
+
+    /**
+     * Refresh user data for the account in the "search" box
+     */
     update: function() {
         MWSidebar.updateAccountInfo( MWSidebar.settings.username, "mw-script-content", false);
     },
+    /**
+     * Refresh user data for the account of the current page
+     */
     updateOther:function() {
 
         var newOtherUser;
@@ -601,6 +730,10 @@ unsafeWindow.MWSidebar ={
             MWSidebar.updateAccountInfo( MWSidebar.otherUsername, "mw-script-content-other", true);
         }
     },
+    /**
+     * Updates the username from the ui.
+     * @param {event} e - The change event.
+     */
     updateUsername : function(e) {
         if (e.which == 13) {
             MWSidebar.settings.username = jQuery('#mw-username').val().toLowerCase();
@@ -609,6 +742,9 @@ unsafeWindow.MWSidebar ={
             return false;
         };
     },
+    /**
+     * Refresh the dom to reflect the collapse state.
+     */
     refreshCollapse: function(){
         if( MWSidebar.settings.collapsed){
             jQuery('#mw-script-content').hide();
@@ -646,6 +782,9 @@ unsafeWindow.MWSidebar ={
             }
         }
     },
+    /**
+     * Load all settings from the saved values.
+     */
     loadSettings: function(){
         MWSidebar.settings.username = MWSidebar.getSetting("mw-username","");
         MWSidebar.settings.barColorHigh = MWSidebar.getSetting("mw-barColorHigh", "#00FF00");
@@ -662,7 +801,11 @@ unsafeWindow.MWSidebar ={
             MWSidebar.settings.links = DEFAULT_LINKS;
         else
             MWSidebar.settings.links = JSON.parse(json);
+
     },
+    /**
+     * Save all settings
+     */
     saveSettings: function(){
         MWSidebar.settings.lastSaved = moment.utc().valueOf();
         MWSidebar.setSetting("mw-username", MWSidebar.settings.username);
@@ -674,6 +817,9 @@ unsafeWindow.MWSidebar ={
         MWSidebar.setSetting("mw-language", MWSidebar.settings.language);
         MWSidebar.setSetting("mw-lastSaved", MWSidebar.settings.lastSaved);
     },
+    /**
+     * Initial DOM-Setup
+     */
     setup: function() {
         MWSidebar.loadSettings();
 
@@ -713,9 +859,19 @@ unsafeWindow.MWSidebar ={
         });
         MWSidebar.helper.addGlobalStyle(GM_getResourceText("JQUI_CSS"));
     },
+    /**
+     * Save a setting permanently
+     * @param {string} cname - The key to save under.
+     * @param {string} cvalue - The value to save.
+     */
     setSetting: function(cname, cvalue) {
         GM_setValue(cname, cvalue);
     },
+    /**
+     * Get a setting or returns the default value
+     * @param {string} cname - The key of the saved value.
+     * @param {string} defaultValue - The default value that is returned if nothing is found.
+     */
     getSetting: function(cname, defaultValue) {
         var val=GM_getValue(cname);
         if(val!=null)
@@ -738,6 +894,9 @@ unsafeWindow.MWSidebar ={
         return "";
 
     },
+    /**
+     * Async updates the global properties from the api
+     */
     updateGlobalProperties: function(){
         steem.api.getDynamicGlobalProperties(function(err, result) {
 
@@ -746,18 +905,30 @@ unsafeWindow.MWSidebar ={
             MWSidebar.globalProps.maxVirtualBandwidth = parseInt(result.max_virtual_bandwidth, 10);
         });
     },
+    /**
+     * Update the current user
+     */
     doUpdate: function(){
         MWSidebar.update();
         setTimeout(MWSidebar.doUpdate, 10000); //Alle 10 Sekunden das eigene Profil updaten
     },
+    /**
+     * Update the user from the current page
+     */
     doUpdateOther: function(){
         MWSidebar.updateOther();
         setTimeout(MWSidebar.doUpdateOther, 100); //Jede 1/10 Sekunde überprüfen ob man jetzt das Profil eines anderen Users offen hat :)
     },
+    /**
+     * Update the global properties and replans itself
+     */
     doUpdateGlobalProperties: function(){
         MWSidebar.updateGlobalProperties();
         setTimeout(MWSidebar.doUpdateGlobalProperties, 60000); // Jede Minute die neuen Properties holen
     },
+    /**
+     * Look for setting changes in other tabs replans itself
+     */
     doReloadSettings: function(){
         //Falls eine neuere Version der Settings existiert Settings neu laden
         let latest=MWSidebar.getSetting("mw-lastSaved",0)
@@ -768,6 +939,9 @@ unsafeWindow.MWSidebar ={
 }
 
 
+/**
+ * Entry-Point
+ */
 $(document).ready(function () {
     steem.api.getDynamicGlobalProperties(function(err, result) {
 
@@ -782,3 +956,6 @@ $(document).ready(function () {
         MWSidebar.doReloadSettings();
     });
 });
+
+//Attaching it to the window of the current site to make debugging alot easier :)
+unsafeWindow.MWSidebar = MWSidebar;
