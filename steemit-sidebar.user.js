@@ -2,7 +2,7 @@
 // @name         Steemit-Sidebar
 // @namespace    http://tampermonkey.net/
 // @copyright 2018, mwfiae (https://steemit.com/@mwfiae)
-// @version      0.6.1
+// @version      0.6.2
 // @description  try to take over the world!
 // @author       MWFIAE
 // @match        http*://steemit.com/*
@@ -318,6 +318,7 @@ console.log("Starting....");
 let MWSidebar ={
     otherUsername: null,             // the name of the "second" user
     settingsMenu: null,              // a reference to the settings menu
+    accountname: "",
     globalProps:{                    // the globalProps are filled by an api call
         totalVestingFund: 0,
         totalVestingShares: 0,
@@ -332,6 +333,7 @@ let MWSidebar ={
         links: DEFAULT_LINKS,        // The links that will be rendered
         side: "left",                // The side of the sidebar
         lastSaved: 0,                // The moment the settings were saved, is used by other tabs to auto update
+        accounts: {}                 // All saved accounts for the account switcher
     },
     /**
      * Some helper variables/functions
@@ -805,6 +807,7 @@ let MWSidebar ={
         MWSidebar.settings.side = MWSidebar.getSetting("mw-side", "left");
         MWSidebar.settings.language = MWSidebar.getSetting("mw-language", "en");
         MWSidebar.settings.lastSaved = MWSidebar.getSetting("mw-lastSaved", 0);
+        MWSidebar.settings.accounts = MWSidebar.getSetting("mw-accounts", {});
 
         let collapsed = MWSidebar.getSetting("mw-collapsed", false);
         MWSidebar.settings.collapsed = collapsed==true || collapsed=="true";
@@ -818,6 +821,7 @@ let MWSidebar ={
         const autopost2 = localStorage.getItem('autopost2');
         if (autopost2) {
             [username, password, memoWif, login_owner_pubkey] = MWSidebar.helper.hex2ascii(autopost2,'hex').toString().split('\t');
+            MWSidebar.accountname = username;
             privPostKey = password; //This will be used for upcoming voting features
             if(!MWSidebar.settings.username|| MWSidebar.settings.username=="")
                 MWSidebar.settings.username = username;
@@ -835,6 +839,7 @@ let MWSidebar ={
         MWSidebar.setSetting("mw-links", JSON.stringify(MWSidebar.settings.links));
         MWSidebar.setSetting("mw-side", MWSidebar.settings.side);
         MWSidebar.setSetting("mw-language", MWSidebar.settings.language);
+        MWSidebar.setSetting("mw-accounts", MWSidebar.settings.accounts);
         MWSidebar.setSetting("mw-lastSaved", MWSidebar.settings.lastSaved);
     },
     /**
